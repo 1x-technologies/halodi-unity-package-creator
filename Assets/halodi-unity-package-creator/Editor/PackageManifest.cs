@@ -45,7 +45,7 @@ namespace Halodi.PackageCreator
 
         public string unity = "2019.2";
 
-        public Repositiory repositiory = new Repositiory();
+        public Repositiory repository = new Repositiory();
 
         public string license = "UNLICENSED";
 

@@ -51,8 +51,8 @@ namespace Halodi.PackageCreator
                 manifest.unity = EditorGUILayout.TextField("Unity version: ", manifest.unity);
 
                 EditorGUILayout.LabelField("Repository");
-                manifest.repositiory.type =  EditorGUILayout.TextField("\ttype: ", manifest.repositiory.type);
-                manifest.repositiory.url =  EditorGUILayout.TextField("\turl: ", manifest.repositiory.url);
+                manifest.repository.type =  EditorGUILayout.TextField("\ttype: ", manifest.repository.type);
+                manifest.repository.url =  EditorGUILayout.TextField("\turl: ", manifest.repository.url);
 
                 manifest.license = EditorGUILayout.TextField("License: ", manifest.license);
 

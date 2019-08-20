@@ -1,10 +1,10 @@
 {
     "name": "com.halodi.halodi-unity-package-creator",
-    "version": "0.0.1",
+    "version": "0.0.8",
     "displayName": "Halodi Unity Package Creator",
     "description": "Tools for creating, editing and publishing Unity packages",
     "unity": "2019.2",
-    "repositiory": {
+    "repository": {
         "type": "git",
         "url": "https://github.com/Halodi/halodi-unity-package-creator.git"
     },

@@ -38,7 +38,8 @@ namespace Halodi.PackageCreator
 
         internal static bool PackageIsInitialized()
         {
-            return LoadPackage() != null;
+            HalodiPackage package = LoadPackage();           
+            return LoadPackage() != null && !string.IsNullOrEmpty(package.PackageFolder);
         }
 
         internal static string PackageFolderOnDisk()
@@ -55,6 +56,11 @@ namespace Halodi.PackageCreator
         {
             HalodiPackage package = LoadPackage();
             if(package == null)
+            {
+                return null;
+            }
+
+            if(package.PackageFolder == null)
             {
                 return null;
             }
@@ -124,14 +130,13 @@ namespace Halodi.PackageCreator
         {
             manifest.name = manifest.name_space + "." + manifest.package_name;
 
-            HalodiPackage package = LoadPackage();
-            if(package == null)
+            if(!PackageIsInitialized())
             {
                 CreatePackage(manifest);
             }
             else
             {
-                UpdatePackage(package, manifest);
+                UpdatePackage(LoadPackage(), manifest);
             }
         }
 
