@@ -79,6 +79,12 @@ namespace Halodi.PackageCreator
                         OnClickUpdate();
                     }
                 }
+
+                if (GUILayout.Button("Cancel"))
+                {
+                    Close();
+                    GUIUtility.ExitGUI();
+                }
             }
         }
 
@@ -103,11 +109,7 @@ namespace Halodi.PackageCreator
 
         internal static void ShowWindow()
         {
-            EditorApplication.delayCall += () => 
-            { 
-                PackageConfigurationView view = EditorWindow.GetWindow<PackageConfigurationView>(true, "Package Configuration", true);  
-                
-            };
+            EditorApplication.delayCall += () => EditorWindow.GetWindow<PackageConfigurationView>(true, "Package Configuration", true);  
         }
 
     }

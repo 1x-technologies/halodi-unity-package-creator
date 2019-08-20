@@ -4,27 +4,32 @@ using System.Collections.Generic;
 namespace Halodi.PackageCreator
 {
 
-    internal class Repositiory
-    {
-        public string type = "git";
-        public string url = "";
-    }
-    
-    internal class Author
-    {
-        public string name = "";
-        public string email = "";
-        public string url = "http://www.halodi.com";
-    }
 
-
-    internal class PublishConfig
-    {
-        public string registry = RegistryConfiguration.registry;
-    }
-
+    [System.Serializable]
     internal class PackageManifest
     {
+
+        [System.Serializable]
+        public class Repositiory
+        {
+            public string type = "git";
+            public string url = "";
+        }
+
+        [System.Serializable]
+        public class Author
+        {
+            public string name = "";
+            public string email = "";
+            public string url = "http://www.halodi.com";
+        }
+
+        [System.Serializable]
+        public class PublishConfig
+        {
+            public string registry = PublicationModel.DEFAULT_REGISTRY;
+        }
+
         [NonSerialized]
         public string name_space = "com.halodi";
 
