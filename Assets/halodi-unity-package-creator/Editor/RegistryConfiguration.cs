@@ -1,7 +1,7 @@
 namespace Halodi.PackageCreator
 {
 
-    public class Configuration
+    internal class RegistryConfiguration
     {
         public static string registry = "http://loki:4873";
     }

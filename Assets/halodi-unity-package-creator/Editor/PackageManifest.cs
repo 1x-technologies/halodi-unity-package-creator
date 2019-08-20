@@ -4,13 +4,13 @@ using System.Collections.Generic;
 namespace Halodi.PackageCreator
 {
 
-    public class Repositiory
+    internal class Repositiory
     {
         public string type = "git";
         public string url = "";
     }
     
-    public class Author
+    internal class Author
     {
         public string name = "";
         public string email = "";
@@ -18,19 +18,19 @@ namespace Halodi.PackageCreator
     }
 
 
-    public class PublishConfig
+    internal class PublishConfig
     {
-        public string registry = Configuration.registry;
+        public string registry = RegistryConfiguration.registry;
     }
 
-    public class PackageManifest
+    internal class PackageManifest
     {
         [NonSerialized]
         public string name_space = "com.halodi";
 
         [NonSerialized]
-        public string package_name = "ExamplePackage";
-
+        public string package_name = "example-package";
+        
         public string name;
         public string version = "0.0.1";
 

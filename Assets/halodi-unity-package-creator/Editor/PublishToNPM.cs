@@ -4,13 +4,13 @@ using UnityEngine;
 namespace Halodi.PackageCreator
 {
 
-    public class PublishToNPM : EditorWindow
+    internal class PublishToNPM : EditorWindow
     {
-        string registry = Configuration.registry;
+        string registry = RegistryConfiguration.registry;
 
 
         [MenuItem("Halodi/PublishToNPM")] //creates a new menu tab
-        public static void StartPublishToNPM()
+        internal static void StartPublishToNPM()
         {
             PublishToNPM publishToNPM = ScriptableObject.CreateInstance(typeof(PublishToNPM)) as PublishToNPM;
             publishToNPM.ShowUtility();
