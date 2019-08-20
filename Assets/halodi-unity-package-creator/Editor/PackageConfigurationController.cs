@@ -41,6 +41,16 @@ namespace Halodi.PackageCreator
             return LoadPackage() != null;
         }
 
+        internal static string PackageFolderOnDisk()
+        {
+            HalodiPackage package = LoadPackage();
+            if(package == null)
+            {
+                return null;
+            }
+            return Path.Combine(Application.dataPath, package.PackageFolder);
+        }
+
         internal static PackageManifest LoadManifest()
         {
             HalodiPackage package = LoadPackage();
