@@ -1,45 +1,42 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Halodi
+namespace Halodi.PackageCreator
 {
-    namespace Editor
+
+    public class PublishToNPM : EditorWindow
     {
+        string registry = Configuration.registry;
 
-        public class PublishToNPM : EditorWindow
+
+        [MenuItem("Halodi/PublishToNPM")] //creates a new menu tab
+        public static void StartPublishToNPM()
         {
-            string registry = Configuration.registry;
+            PublishToNPM publishToNPM = ScriptableObject.CreateInstance(typeof(PublishToNPM)) as PublishToNPM;
+            publishToNPM.ShowUtility();
+        }
 
 
-            [MenuItem("Halodi/PublishToNPM")] //creates a new menu tab
-            public static void StartPublishToNPM()
+        void OnGUI()
+        {
+            EditorGUILayout.LabelField("Publish to NPM");
+            registry = EditorGUILayout.TextField("Registry: ", registry);
+
+
+
+            if (GUILayout.Button("Publish"))
             {
-                PublishToNPM publishToNPM = ScriptableObject.CreateInstance(typeof(PublishToNPM)) as PublishToNPM;
-                publishToNPM.ShowUtility();
+                Publish();
+
             }
+        }
 
-
-            void OnGUI()
-            {
-                EditorGUILayout.LabelField("Publish to NPM");
-                registry = EditorGUILayout.TextField("Registry: ", registry);
-
-
-
-                if (GUILayout.Button("Publish"))
-                {
-                    Publish();
-
-                }
-            }
-
-            void Publish()
-            {
-                Close();
-                GUIUtility.ExitGUI();
-            }
-
+        void Publish()
+        {
+            Close();
+            GUIUtility.ExitGUI();
         }
 
     }
+
 }
