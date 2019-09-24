@@ -5,7 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
-
+using static Halodi.PackageCreator.AssetDatabaseUtilities;
 
 namespace Halodi.PackageCreator
 {
@@ -93,14 +93,14 @@ namespace Halodi.PackageCreator
             string packageFolder = AssetDatabaseUtilities.CreateFolder(Paths.AssetsFolder, halodiPackage.PackageFolder);
 
 
-            AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.EditorFolder, manifest.name, false);
-            AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.RuntimeFolder, manifest.name, false);
+            AssemblyDefinition runtime = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.RuntimeFolder, manifest.name, false, false, null);
+            AssemblyDefinition editor = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.EditorFolder, manifest.name, false, true, new List<string>{ runtime.name });
 
             string testFolder = AssetDatabaseUtilities.CreateFolder(packageFolder, Paths.TestFolder);
 
 
-            AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.EditorFolder, manifest.name, true);
-            AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.RuntimeFolder, manifest.name, true);
+            AssemblyDefinition runtimeTests = AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.RuntimeFolder, manifest.name, true, false, new List<string> { runtime.name });
+            AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.EditorFolder, manifest.name, true, true, new List<string> { runtime.name, editor.name });
 
 
             AssetDatabaseUtilities.CreateJSONFile(manifest, packageFolder, Paths.PackageManifest);

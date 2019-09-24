@@ -1,6 +1,6 @@
 {
     "name": "com.halodi.halodi-unity-package-creator",
-    "version": "0.0.8",
+    "version": "0.0.13",
     "displayName": "Halodi Unity Package Creator",
     "description": "Tools for creating, editing and publishing Unity packages",
     "unity": "2019.2",

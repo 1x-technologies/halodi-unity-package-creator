@@ -1,3 +1,16 @@
 {
-    "name": "com.halodi.halodi-unity-package-creator.Editor"
+    "name": "com.halodi.halodi-unity-package-creator.Editor",
+    "references": [
+        "com.halodi.halodi-unity-package-creator.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
 }
