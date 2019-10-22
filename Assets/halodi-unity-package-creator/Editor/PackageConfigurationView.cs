@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -60,6 +61,29 @@ namespace Halodi.PackageCreator
                 manifest.author.name =  EditorGUILayout.TextField("\tname: ", manifest.author.name);
                 manifest.author.email =  EditorGUILayout.TextField("\temail: ", manifest.author.email);
                 manifest.author.url =  EditorGUILayout.TextField("\turl: ", manifest.author.url);
+
+                EditorGUILayout.LabelField("Dependencies");
+                if (GUILayout.Button("Add Dependency"))
+                {
+                    manifest.dependency_list.Add(new PackageManifest.Dependency());
+                }
+
+                foreach(PackageManifest.Dependency entry in manifest.dependency_list)
+                {
+                    if(!entry.markDeleted)
+                    {
+                        entry.name = EditorGUILayout.TextField("\t    Name:", entry.name);
+                        entry.version = EditorGUILayout.TextField("\t    Version:", entry.version);
+                        
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.Separator();
+                        if(GUILayout.Button("Remove"))
+                        {
+                            entry.markDeleted = true;
+                        }
+                        EditorGUILayout.EndHorizontal();
+                    }
+                }
 
                 EditorGUILayout.LabelField("Publish configuration");
                 manifest.publishConfig.registry =  EditorGUILayout.TextField("\tregistry: ", manifest.publishConfig.registry);

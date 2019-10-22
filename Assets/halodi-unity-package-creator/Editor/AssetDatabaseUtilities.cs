@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using fastJSON;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,7 +10,12 @@ namespace Halodi.PackageCreator
     {
         internal static void CreateJSONFile(object obj, string parentPath, string name)
         {
-            CreateTextFile(JsonUtility.ToJson(obj, true), parentPath, name);
+            JSONParameters parameters = new JSONParameters();
+            parameters.UseExtensions = false;
+            string objStr = fastJSON.JSON.ToNiceJSON(obj, parameters);
+
+
+            CreateTextFile(objStr, parentPath, name);
         }
 
         internal static void UpdateJSONFile(object obj, string parentPath, string name)

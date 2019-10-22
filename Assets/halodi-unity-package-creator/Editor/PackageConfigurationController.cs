@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using static Halodi.PackageCreator.AssetDatabaseUtilities;
+using fastJSON;
 
 namespace Halodi.PackageCreator
 {
@@ -32,7 +33,7 @@ namespace Halodi.PackageCreator
             }
             else
             {
-                return JsonUtility.FromJson<HalodiPackage>(halodiPackage.text);    
+                return JSON.ToObject<HalodiPackage>(halodiPackage.text);    
             }
         }
 
@@ -73,9 +74,10 @@ namespace Halodi.PackageCreator
                 return null;
             }
 
-            PackageManifest manifest = JsonUtility.FromJson<PackageManifest>(manifestAsset.text);
+            PackageManifest manifest = JSON.ToObject<PackageManifest>(manifestAsset.text);
             manifest.name_space = package.PackageNamespace;
             manifest.package_name = package.PackageName;
+            manifest.OnAfterDeserialize();
 
             return manifest;
         }
@@ -102,7 +104,6 @@ namespace Halodi.PackageCreator
             AssemblyDefinition runtimeTests = AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.RuntimeFolder, manifest.name, true, false, new List<string> { runtime.name });
             AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.EditorFolder, manifest.name, true, true, new List<string> { runtime.name, editor.name });
 
-
             AssetDatabaseUtilities.CreateJSONFile(manifest, packageFolder, Paths.PackageManifest);
             AssetDatabaseUtilities.CreateTextFile("", packageFolder, Paths.Readme);
             AssetDatabaseUtilities.CreateTextFile("", packageFolder, Paths.License);
@@ -128,7 +129,8 @@ namespace Halodi.PackageCreator
 
         internal static void UpdateOrCreatePackage(PackageManifest manifest)
         {
-            manifest.name = manifest.name_space + "." + manifest.package_name;
+            manifest.OnBeforeSerialize();
+            
 
             if(!PackageIsInitialized())
             {
