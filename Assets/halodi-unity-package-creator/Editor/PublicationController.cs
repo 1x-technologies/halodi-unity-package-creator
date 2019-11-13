@@ -21,7 +21,7 @@ namespace Halodi.PackageCreator
             string DefaultNPMExecutable = "";
 
 #if UNITY_EDITOR_WIN
-            DefaultNPMExecutable = "C:\Program Files\nodejs\node_modules\npm.cmd";
+            DefaultNPMExecutable = "C:\\Program Files\\nodejs\\npm.cmd";
 #elif UNITY_EDITOR_LINUX
             DefaultNPMExecutable = "/usr/bin/npm";
 #elif UNITY_EDITOR_OSX
