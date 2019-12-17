@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using fastJSON;
@@ -8,6 +9,29 @@ namespace Halodi.PackageCreator
 {
     internal class AssetDatabaseUtilities
     {
+        internal static string ReadTextFile(string parentPath, string name)
+        {
+            string asset = Path.Combine(parentPath, name);
+
+            if(!File.Exists(asset))
+            {
+                return null;
+            }
+
+            try
+            {
+                using (StreamReader reader = new StreamReader(asset))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+                return null;
+            }
+        }
+
         internal static void CreateJSONFile(object obj, string parentPath, string name)
         {
             JSONParameters parameters = new JSONParameters();
@@ -29,7 +53,6 @@ namespace Halodi.PackageCreator
             StreamWriter writer = new StreamWriter(asset, false);
             writer.Write(str);
             writer.Close();
-            AssetDatabase.ImportAsset(asset, ImportAssetOptions.ForceUpdate);
         }
 
         internal static void UpdateTextFile(string str, string parentPath, string name)
@@ -40,8 +63,15 @@ namespace Halodi.PackageCreator
         
         internal static string CreateFolder(string parent, string name)
         {
-            AssetDatabase.CreateFolder(parent, name);
-            return Path.Combine(parent, name);
+            
+            string newFolder =  Path.Combine(parent, name);
+            Directory.CreateDirectory(newFolder);
+            return newFolder;
+        }
+
+        internal static void UpdateAssetDatabase()
+        {
+            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
         }
 
         internal class AssemblyDefinition
@@ -83,6 +113,11 @@ namespace Halodi.PackageCreator
             AssetDatabaseUtilities.CreateJSONFile(def, folder, def.name + Paths.AssemblyDefinitionExtension);
 
             return def;
+        }
+
+        internal static bool IsValidFolder(string path)
+        {
+            return Directory.Exists(path);
         }
     }
 }

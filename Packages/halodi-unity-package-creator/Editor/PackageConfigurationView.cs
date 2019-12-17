@@ -133,7 +133,16 @@ namespace Halodi.PackageCreator
 
         internal static void ShowWindow()
         {
-            EditorApplication.delayCall += () => EditorWindow.GetWindow<PackageConfigurationView>(true, "Package Configuration", true);  
+
+            if(PackageConfigurationController.PackageIsInitialized())
+            {
+                Object manifestObject = PackageConfigurationController.GetPackageManifest();
+                Selection.activeObject = manifestObject;
+            }
+            else
+            {
+                EditorApplication.delayCall += () => EditorWindow.GetWindow<PackageConfigurationView>(true, "Package Configuration", true);  
+            }
         }
 
     }

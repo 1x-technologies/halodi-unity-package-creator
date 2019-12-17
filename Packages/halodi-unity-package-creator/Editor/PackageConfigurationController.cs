@@ -26,21 +26,36 @@ namespace Halodi.PackageCreator
     {
         internal static HalodiPackage LoadPackage()
         {
-            TextAsset halodiPackage = AssetDatabase.LoadAssetAtPath(Path.Combine(Paths.AssetsFolder, Paths.PackageDescription), typeof(TextAsset)) as TextAsset;
+            string halodiPackage = AssetDatabaseUtilities.ReadTextFile(Paths.PackagesFolder, Paths.PackageDescription);
+
             if(halodiPackage == null)
             {
                 return null;
             }
             else
             {
-                return JSON.ToObject<HalodiPackage>(halodiPackage.text);    
+
+                return JSON.ToObject<HalodiPackage>(halodiPackage);    
             }
         }
 
         internal static bool PackageIsInitialized()
         {
             HalodiPackage package = LoadPackage();           
-            return LoadPackage() != null && !string.IsNullOrEmpty(package.PackageFolder);
+            return package != null && !string.IsNullOrEmpty(package.PackageFolder);
+        }
+
+        internal static UnityEngine.Object GetPackageManifestObject()
+        {
+            PackageManifest manifest = LoadManifest();
+            if(manifest == null)
+            {
+                return null;
+            }
+
+            string packageDirectory = Path.Combine(Paths.PackagesFolder, manifest.name);
+            string packageManifest = Path.Combine(packageDirectory, Paths.PackageManifest);
+            return AssetDatabase.LoadAssetAtPath(packageManifest, typeof(TextAsset));
         }
 
         internal static string PackageFolderOnDisk()
@@ -66,15 +81,15 @@ namespace Halodi.PackageCreator
                 return null;
             }
 
-            string PackageFolder = Path.Combine(Paths.AssetsFolder, package.PackageFolder);
+            string PackageFolder = Path.Combine(Paths.PackagesFolder, package.PackageFolder);
                 
-            TextAsset manifestAsset = AssetDatabase.LoadAssetAtPath(Path.Combine(PackageFolder, Paths.PackageManifest), typeof(TextAsset)) as TextAsset;
+            string manifestAsset = AssetDatabaseUtilities.ReadTextFile(PackageFolder, Paths.PackageManifest);
             if(manifestAsset == null)
             {
                 return null;
             }
 
-            PackageManifest manifest = JSON.ToObject<PackageManifest>(manifestAsset.text);
+            PackageManifest manifest = JSON.ToObject<PackageManifest>(manifestAsset);
             manifest.name_space = package.PackageNamespace;
             manifest.package_name = package.PackageName;
             manifest.OnAfterDeserialize();
@@ -90,9 +105,9 @@ namespace Halodi.PackageCreator
             halodiPackage.PackageNamespace = manifest.name_space;
             halodiPackage.PackageFolder = manifest.package_name;
 
-            AssetDatabaseUtilities.CreateJSONFile(halodiPackage, Paths.AssetsFolder, Paths.PackageDescription);
+            AssetDatabaseUtilities.CreateJSONFile(halodiPackage, Paths.PackagesFolder, Paths.PackageDescription);
 
-            string packageFolder = AssetDatabaseUtilities.CreateFolder(Paths.AssetsFolder, halodiPackage.PackageFolder);
+            string packageFolder = AssetDatabaseUtilities.CreateFolder(Paths.PackagesFolder, halodiPackage.PackageFolder);
 
 
             AssemblyDefinition runtime = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.RuntimeFolder, manifest.name, false, false, null);
@@ -108,23 +123,25 @@ namespace Halodi.PackageCreator
             AssetDatabaseUtilities.CreateTextFile("", packageFolder, Paths.Readme);
             AssetDatabaseUtilities.CreateTextFile("", packageFolder, Paths.License);
             AssetDatabaseUtilities.CreateTextFile("", packageFolder, Paths.Changelog);
+
+            AssetDatabaseUtilities.UpdateAssetDatabase();
         }
 
         private static void UpdatePackage(HalodiPackage package, PackageManifest manifest)
         {
             package.PackageName = manifest.package_name;
             package.PackageNamespace = manifest.name_space;
-            AssetDatabaseUtilities.UpdateJSONFile(package, Paths.AssetsFolder, Paths.PackageDescription);
+            AssetDatabaseUtilities.UpdateJSONFile(package, Paths.PackagesFolder, Paths.PackageDescription);
 
-            string packageFolder = Path.Combine(Paths.AssetsFolder, package.PackageFolder);
+            string packageFolder = Path.Combine(Paths.PackagesFolder, package.PackageFolder);
 
-            if(!AssetDatabase.IsValidFolder(packageFolder))
+            if(!AssetDatabaseUtilities.IsValidFolder(packageFolder))
             {
                 throw new IOException("Package folder " + package.PackageFolder + " does not exist");
             }
 
             AssetDatabaseUtilities.UpdateJSONFile(manifest, packageFolder, Paths.PackageManifest);
-            
+            AssetDatabaseUtilities.UpdateAssetDatabase();
         }
 
         internal static void UpdateOrCreatePackage(PackageManifest manifest)
