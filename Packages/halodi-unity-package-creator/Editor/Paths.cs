@@ -11,6 +11,7 @@ namespace Halodi.PackageCreator
         public static string License = "LICENSE.md";
 
         public static string PackageDescription = "HalodiPackage.json";
+        public static string HalodiPackagesDescription = "HalodiPackages.json";
         public static string PackagesFolder = "Packages";
 
         public static string RuntimeFolder = "Runtime";

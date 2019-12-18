@@ -12,16 +12,6 @@ namespace Halodi.PackageCreator
 {
 
 
-
-    internal class HalodiPackage
-    {
-        public string PackageNamespace;
-        public string PackageName;
-
-        public string PackageFolder;
-
-    }
-
     internal class PackageConfigurationController
     {
         internal static HalodiPackage LoadPackage()

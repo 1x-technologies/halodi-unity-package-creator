@@ -12,13 +12,7 @@ namespace Halodi.PackageCreator
         PackageManifest manifest = null;
 
         private EditorApplication.CallbackFunction ApplicationUpdateCallback;
-
-
-        void LoadPackageManifest()
-        {
-            
-        }
-
+ 
         void OnEnable()
         {
             PackageManifest currentManifest = PackageConfigurationController.LoadManifest();
