@@ -136,7 +136,7 @@ namespace Halodi.PackageCreator
 
             if(PackageConfigurationController.PackageIsInitialized())
             {
-                Object manifestObject = PackageConfigurationController.GetPackageManifest();
+                Object manifestObject = PackageConfigurationController.GetPackageManifestObject();
                 Selection.activeObject = manifestObject;
             }
             else

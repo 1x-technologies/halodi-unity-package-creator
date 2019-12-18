@@ -65,7 +65,11 @@ namespace Halodi.PackageCreator
             {
                 return null;
             }
-            return Path.Combine(Application.dataPath, package.PackageFolder);
+
+            string root = Directory.GetParent(Application.dataPath).ToString();
+            string PackagesFolder = Path.Combine(root, Paths.PackagesFolder);
+
+            return Path.Combine(PackagesFolder, package.PackageFolder);
         }
 
         internal static PackageManifest LoadManifest()

@@ -62,6 +62,7 @@ namespace Halodi.PackageCreator
 
         void Publish()
         {
+            Debug.Log("Publishing package to " + publicationModel.RegisteryURL);
             EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + publicationModel.RegisteryURL, 0.1f);
             string output = PublicationController.Publish(publicationModel);
             EditorUtility.ClearProgressBar();
