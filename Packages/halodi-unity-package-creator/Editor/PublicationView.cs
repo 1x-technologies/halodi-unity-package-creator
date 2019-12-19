@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -56,8 +57,15 @@ namespace Halodi.PackageCreator
                 }
                 else
                 {
+                    EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField("Package registry: " + PackageToPublish.publishConfig.registry);
-                    EditorGUILayout.LabelField("To change the package registry, edit package.json in a text editor.");
+                    if(GUILayout.Button("Edit"))
+                    {
+                        Close();
+                        EditRegistry();
+                        GUIUtility.ExitGUI();
+                    }
+                    EditorGUILayout.EndHorizontal();
                 }
                 EditorGUILayout.Separator();
                 publicationModel.user = EditorGUILayout.TextField("Registry user: ", publicationModel.user);
@@ -80,6 +88,17 @@ namespace Halodi.PackageCreator
                     GUIUtility.ExitGUI();
                 }
             }
+        }
+
+        void EditRegistry()
+        {
+            if(PackageToPublish != null)
+            {
+                EditorUtility.DisplayDialog("Edit registry", "A publishConfig section is set in package.json. You can change the registry in the text editor that will be opened.", "Ok");
+                UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal(Path.Combine(HalodiPackageCreatorController.GetPackageDirectory(PackageToPublish), Paths.PackageManifest), 0, 0);
+            }
+
+
         }
 
         void Publish()
