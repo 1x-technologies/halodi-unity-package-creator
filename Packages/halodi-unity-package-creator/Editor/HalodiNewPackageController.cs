@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using static Halodi.PackageCreator.AssetDatabaseUtilities;
-using fastJSON;
 using System.Text;
 
 namespace Halodi.PackageCreator
