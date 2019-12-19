@@ -9,6 +9,12 @@ namespace Halodi.PackageCreator
 {
     internal class AssetDatabaseUtilities
     {
+        internal static string GetProjectRoot()
+        {
+            DirectoryInfo dataInfo = new DirectoryInfo(Application.dataPath);
+            return dataInfo.Parent.ToString();
+        }
+
         internal static string ReadTextFile(string parentPath, string name)
         {
             string asset = Path.Combine(parentPath, name);

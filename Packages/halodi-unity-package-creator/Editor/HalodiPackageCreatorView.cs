@@ -68,7 +68,8 @@ namespace Halodi.PackageCreator
 
         private void PublishPackage(PackageManifest package)
         {
-            throw new NotImplementedException();
+            PublicationView.PublishPackage(package);
+            CloseWindow();
         }
 
         private void SelectPackage(PackageManifest package)

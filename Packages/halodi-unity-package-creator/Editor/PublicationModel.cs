@@ -9,5 +9,10 @@ namespace Halodi.PackageCreator
 
         public string NPMExecutable;
         public string RegisteryURL = DEFAULT_REGISTRY;
+
+        public string user;
+        public string password;
+
+        public string email;
     }
 }

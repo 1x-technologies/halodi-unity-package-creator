@@ -8,26 +8,36 @@ namespace Halodi.PackageCreator
     {
         private PublicationModel publicationModel = null;
 
+        private PackageManifest PackageToPublish = null;
 
-        [MenuItem("Halodi/Publish Package")] //creates a new menu tab
-        internal static void StartPublishToNPM()
-        {
-            if(HalodiNewPackageController.PackageIsInitialized())
-            {
-                EditorApplication.delayCall += () => EditorWindow.GetWindow<PublicationView>(true, "Package Publishing", true);  
-            }
-        }
 
         void OnEnable()
         {
             publicationModel = PublicationController.LoadModel();
         }
 
+
+        private string GetRegistry()
+        {
+            if(PackageToPublish.publishConfig == null)
+            {
+                return PackageToPublish.publishConfig.registry;
+            }
+            else
+            {
+                return publicationModel.RegisteryURL;
+            }
+        }
+
         void OnGUI()
         {
-            if(publicationModel != null)
+            if(publicationModel != null && PackageToPublish != null)
             {
-                EditorGUILayout.LabelField("Publish to Package Registry");
+                EditorGUILayout.LabelField("Publishing " + PackageToPublish.displayName, EditorStyles.whiteLargeLabel);
+
+                EditorGUILayout.Separator();
+                EditorGUILayout.Separator();
+                EditorGUILayout.BeginHorizontal();
                 publicationModel.NPMExecutable = EditorGUILayout.TextField("npm executable: ", publicationModel.NPMExecutable);
 
                 if (GUILayout.Button("Browse..."))
@@ -38,12 +48,24 @@ namespace Halodi.PackageCreator
                         publicationModel.NPMExecutable = path;
                     }
                 }
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.Separator();
+                if(PackageToPublish.publishConfig == null)
+                {
+                    publicationModel.RegisteryURL = EditorGUILayout.TextField("Package registry: ", publicationModel.RegisteryURL);
+                }
+                else
+                {
+                    EditorGUILayout.LabelField("Package registry: " + PackageToPublish.publishConfig.registry);
+                    EditorGUILayout.LabelField("To change the package registry, edit package.json in a text editor.");
+                }
+                EditorGUILayout.Separator();
+                publicationModel.user = EditorGUILayout.TextField("Registry user: ", publicationModel.user);
+                publicationModel.password = EditorGUILayout.PasswordField("Registry password: ", publicationModel.password);
+                publicationModel.email = EditorGUILayout.TextField("Registry email: ", publicationModel.email);
 
-                publicationModel.RegisteryURL = EditorGUILayout.TextField("Package registry: ", publicationModel.RegisteryURL);
-
-                EditorGUILayout.LabelField("Create a npm user by running");
-                EditorGUILayout.LabelField("`npm login --registry [package registry]`");
-                EditorGUILayout.LabelField("before publishing");
+                EditorGUILayout.Separator();
+                EditorGUILayout.Separator();
 
                 if (GUILayout.Button("Publish"))
                 {
@@ -62,12 +84,39 @@ namespace Halodi.PackageCreator
 
         void Publish()
         {
-            Debug.Log("Publishing package to " + publicationModel.RegisteryURL);
-            EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + publicationModel.RegisteryURL, 0.1f);
-            string output = PublicationController.Publish(publicationModel);
-            EditorUtility.ClearProgressBar();
+            if(PackageToPublish != null)
+            {
+                string registry = GetRegistry();
+                EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + registry, 0.25f);
+                try
+                {
+                    Debug.Log("Publishing package to " + registry);
+                
+                    if(PublicationController.Login(publicationModel, GetRegistry()))
+                    {
+                        EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + registry, 0.5f);
+                        string output = PublicationController.Publish(publicationModel, PackageToPublish, GetRegistry());
+                        UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal(output, 0, 0);
 
-            UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal(output, 0, 0);
+                    }
+                    else
+                    {
+                        EditorUtility.ClearProgressBar();
+                        EditorUtility.DisplayDialog("Login failed", "Cannot login to " + registry, "Close");
+                    }
+
+                }
+                catch(System.Exception e)
+                {
+                    Debug.LogError(e);
+                }
+
+                EditorUtility.ClearProgressBar();
+
+            }
+
+
+            
         }
 
         void OnDisable()
@@ -76,6 +125,16 @@ namespace Halodi.PackageCreator
             {
                 PublicationController.SaveModel(publicationModel);
             }
+        }
+
+
+        public static void PublishPackage(PackageManifest package)
+        {
+               EditorApplication.delayCall += () => 
+               {
+                   PublicationView publicationView = EditorWindow.GetWindow<PublicationView>(true, "Package Publishing", true);
+                   publicationView.PackageToPublish = package;
+               };
         }
 
     }

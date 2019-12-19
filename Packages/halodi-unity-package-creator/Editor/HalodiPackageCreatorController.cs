@@ -11,12 +11,12 @@ namespace Halodi.PackageCreator
         internal static List<PackageManifest> LoadPackages()
         {
 
-            DirectoryInfo packageDirectory = new DirectoryInfo(Paths.PackagesFolder);
+            DirectoryInfo packageDirectory = new DirectoryInfo(Path.Combine(AssetDatabaseUtilities.GetProjectRoot(), Paths.PackagesFolder));
 
             List<PackageManifest> packages = new List<PackageManifest>();
             foreach (DirectoryInfo directory in packageDirectory.EnumerateDirectories())
             {
-                string manifestPath = Path.Combine(Paths.PackagesFolder, directory.Name);
+                string manifestPath = Path.Combine(packageDirectory.ToString(), directory.Name);
                 if(File.Exists(Path.Combine(manifestPath, Paths.PackageManifest)))
                 {
                     string halodiPackage = AssetDatabaseUtilities.ReadTextFile(manifestPath, Paths.PackageManifest);
@@ -27,8 +27,9 @@ namespace Halodi.PackageCreator
                     }
                     else
                     {
-
-                        packages.Add(JsonUtility.FromJson<PackageManifest>(halodiPackage));
+                        PackageManifest manifest = JsonUtility.FromJson<PackageManifest>(halodiPackage);
+                        manifest.filesystem_location = manifestPath;
+                        packages.Add(manifest);
                     }
                 }
             }
@@ -43,6 +44,11 @@ namespace Halodi.PackageCreator
             string packageDirectory = Path.Combine(Paths.PackagesFolder, manifest.name);
             string packageManifest = Path.Combine(packageDirectory, Paths.PackageManifest);
             return AssetDatabase.LoadAssetAtPath(packageManifest, typeof(Object));
+        }
+
+        internal static string GetPackageDirectory(PackageManifest manifest)
+        {
+            return manifest.filesystem_location; 
         }
 
     }

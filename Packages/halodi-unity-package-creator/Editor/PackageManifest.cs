@@ -16,6 +16,9 @@ namespace Halodi.PackageCreator
         }
 
         [NonSerialized]
+        public string filesystem_location;
+
+        [NonSerialized]
         public string name_space = "com.halodi";
 
         [NonSerialized]

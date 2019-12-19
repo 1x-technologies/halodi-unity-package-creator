@@ -15,69 +15,6 @@ namespace Halodi.PackageCreator
 
     internal class HalodiNewPackageController
     {
-        internal static HalodiPackage LoadPackage()
-        {
-            string halodiPackage = AssetDatabaseUtilities.ReadTextFile(Paths.PackagesFolder, Paths.PackageDescription);
-
-            if(halodiPackage == null)
-            {
-                return null;
-            }
-            else
-            {
-
-                return JSON.ToObject<HalodiPackage>(halodiPackage);    
-            }
-        }
-
-        internal static bool PackageIsInitialized()
-        {
-            HalodiPackage package = LoadPackage();           
-            return package != null && !string.IsNullOrEmpty(package.PackageFolder);
-        }
-
-        internal static string PackageFolderOnDisk()
-        {
-            HalodiPackage package = LoadPackage();
-            if(package == null)
-            {
-                return null;
-            }
-
-            string root = Directory.GetParent(Application.dataPath).ToString();
-            string PackagesFolder = Path.Combine(root, Paths.PackagesFolder);
-
-            return Path.Combine(PackagesFolder, package.PackageFolder);
-        }
-
-        internal static PackageManifest LoadManifest()
-        {
-            HalodiPackage package = LoadPackage();
-            if(package == null)
-            {
-                return null;
-            }
-
-            if(package.PackageFolder == null)
-            {
-                return null;
-            }
-
-            string PackageFolder = Path.Combine(Paths.PackagesFolder, package.PackageFolder);
-                
-            string manifestAsset = AssetDatabaseUtilities.ReadTextFile(PackageFolder, Paths.PackageManifest);
-            if(manifestAsset == null)
-            {
-                return null;
-            }
-
-            PackageManifest manifest = JSON.ToObject<PackageManifest>(manifestAsset);
-            manifest.name_space = package.PackageNamespace;
-            manifest.package_name = package.PackageName;
-            manifest.OnAfterDeserialize();
-
-            return manifest;
-        }
 
         private static string CreateReadme(PackageManifest manifest)
         {
