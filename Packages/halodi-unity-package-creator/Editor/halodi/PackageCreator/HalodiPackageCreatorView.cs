@@ -28,7 +28,7 @@ namespace Halodi.PackageCreator
         void OnGUI()
         {
             EditorGUILayout.LabelField("Packages in this project");
-            EditorGUILayout.BeginScrollView(scrollPos);
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
 
             
             foreach (PackageManifest package in packages)
