@@ -76,10 +76,6 @@ namespace Halodi.PackageCreator
             AssetDatabaseUtilities.CreateTextFile(CreateLicense(manifest), packageFolder, Paths.License);
             AssetDatabaseUtilities.CreateTextFile(CreateChangelog(manifest), packageFolder, Paths.Changelog);
 
-
-
-
-
             AssetDatabaseUtilities.UpdateAssetDatabase();
         }
 
@@ -97,6 +93,17 @@ namespace Halodi.PackageCreator
 
             return Regex.IsMatch(name, @"^[a-z][a-z0-9_\-]*$");
         }
+
+        internal static bool ValidateFolderName(string name)
+        {
+            if(name.Trim().Length == 0)
+            {
+                return false;
+            }
+
+            return Regex.IsMatch(name, @"^[a-zA-Z][a-zA-Z0-9_\-\ ]*$");
+        }
+
 
         internal static bool ValidateNameSpace(string name)
         {

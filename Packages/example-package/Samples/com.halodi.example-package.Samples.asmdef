@@ -1,9 +1,0 @@
-{
-    "name": "com.halodi.example-package.Samples",
-    "references": [
-        "com.halodi.example-package.Runtime"
-    ],
-    "includePlatforms": [],
-    "excludePlatforms": [],
-    "optionalUnityReferences": []
-}

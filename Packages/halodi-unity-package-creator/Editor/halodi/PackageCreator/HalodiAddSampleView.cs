@@ -43,7 +43,7 @@ namespace Halodi.PackageCreator
 
         private void OnClickCreate()
         {
-            if(!HalodiNewPackageController.ValidateName(sample.path))
+            if(!HalodiNewPackageController.ValidateFolderName(sample.path))
             {
                 EditorUtility.DisplayDialog("Invalid sample path", "Please specify a valid sample paths. Valid sample paths start with a letter, and only contains letters, numbers, underscores and hyphens.", "Close");
                 return;

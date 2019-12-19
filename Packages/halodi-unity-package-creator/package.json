@@ -1,29 +1,28 @@
 {
-    "name" : "com.halodi.halodi-unity-package-creator",
-    "version" : "0.1.0",
-    "displayName" : "Halodi Unity Package Creator",
-    "description" : "Tools for creating, editing and publishing Unity packages",
-    "unity" : "2019.2",
-    "repository" : {
-        "type" : "git",
-        "url" : "https://github.com/Halodi/halodi-unity-package-creator.git"
-    },
-    "license" : "UNLICENSED",
-    "author" : {
-        "name" : "Jesper Smith",
-        "email" : "jesper@halodi.com",
-        "url" : "http://www.halodi.com"
-    },
-    "publishConfig" : {
-        "registry" : "http://loki:4873"
-    },
-    "keywords" : [
-    ],
-    "samples" : [
-        {
-            "displayName" : "Example sample",
-            "description" : "A sample",
-            "path" : "Samples~/example-sample"
-        }
-    ]
+  "name": "com.halodi.halodi-unity-package-creator",
+  "version": "0.1.2",
+  "displayName": "Halodi Unity Package Creator",
+  "description": "Tools for creating, editing and publishing Unity packages",
+  "unity": "2019.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Halodi/halodi-unity-package-creator.git"
+  },
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Jesper Smith",
+    "email": "jesper@halodi.com",
+    "url": "http://www.halodi.com"
+  },
+  "publishConfig": {
+    "registry": "http://loki:4873"
+  },
+  "keywords": [],
+  "samples": [
+    {
+      "displayName": "Example sample",
+      "description": "A sample",
+      "path": "Samples~/example-sample"
+    }
+  ]
 }

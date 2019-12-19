@@ -60,7 +60,7 @@ namespace Halodi.PackageCreator
             return Path.Combine(assetFolder, packageFolderName);
         }
 
-        internal static string GetSampleDirectory(PackageManifest manifest)
+        internal static string GetAssetsSampleDirectory(PackageManifest manifest)
         {
             return Path.Combine(GetAssetDirectory(manifest), Paths.AssetsSamplesFolder);
         }
@@ -71,7 +71,7 @@ namespace Halodi.PackageCreator
         {
 
             string assetDirectory = GetAssetDirectory(manifest);
-            string samplesDirectory = GetSampleDirectory(manifest);
+            string samplesDirectory = GetAssetsSampleDirectory(manifest);
 
             if(!sample.path.StartsWith(Paths.PackageSamplesFolder + "/"))
             {

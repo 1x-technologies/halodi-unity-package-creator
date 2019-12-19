@@ -23,7 +23,7 @@ namespace Halodi.PackageCreator
         {
             string asset = Path.Combine(parentPath, name);
 
-            if(!File.Exists(asset))
+            if (!File.Exists(asset))
             {
                 return null;
             }
@@ -66,11 +66,11 @@ namespace Halodi.PackageCreator
             CreateTextFile(str, parentPath, name);
         }
 
-        
+
         internal static string CreateFolder(string parent, string name)
         {
-            
-            string newFolder =  Path.Combine(parent, name);
+
+            string newFolder = Path.Combine(parent, name);
             Directory.CreateDirectory(newFolder);
             return newFolder;
         }
@@ -95,23 +95,23 @@ namespace Halodi.PackageCreator
 
         internal static AssemblyDefinition CreateAssemblyFolder(string parentFolder, string folderName, string packageName, bool testFolder, bool editor, List<string> references)
         {
-            string name = packageName + "." + folderName+ (testFolder?".Tests":"");
+            string name = packageName + "." + folderName + (testFolder ? ".Tests" : "");
             string folder = AssetDatabaseUtilities.CreateFolder(parentFolder, folderName);
             AssemblyDefinition def = new AssemblyDefinition();
             def.name = name;
 
-            if(editor)
+            if (editor)
             {
                 def.includePlatforms.Add("Editor");
             }
 
 
-            if(references != null)
-            {   
+            if (references != null)
+            {
                 def.references.AddRange(references);
             }
 
-            if(testFolder)
+            if (testFolder)
             {
                 def.optionalUnityReferences.Add("TestAssemblies");
             }
@@ -119,6 +119,44 @@ namespace Halodi.PackageCreator
             AssetDatabaseUtilities.CreateJSONFile(def, folder, def.name + Paths.AssemblyDefinitionExtension);
 
             return def;
+        }
+
+        public static void CopyDirectory(string sourceDirName, string destDirName, bool copySubDirs)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException(
+                    "Source directory does not exist or could not be found: "
+                    + sourceDirName);
+            }
+
+            DirectoryInfo[] dirs = dir.GetDirectories();
+            // If the destination directory doesn't exist, create it.
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                string temppath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, false);
+            }
+
+            // If copying subdirectories, copy them and their contents to new location.
+            if (copySubDirs)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(destDirName, subdir.Name);
+                    CopyDirectory(subdir.FullName, temppath, copySubDirs);
+                }
+            }
         }
 
         internal static bool IsValidFolder(string path)

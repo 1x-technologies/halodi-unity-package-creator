@@ -224,9 +224,46 @@ namespace Halodi.PackageCreator
             }
         }
 
+        internal static void CopySamples(PackageManifest manifest)
+        {
+            string AssetSampleDirectory = HalodiPackageCreatorController.GetAssetsSampleDirectory(manifest);
+
+            if(Directory.Exists(AssetSampleDirectory))
+            {
+                EmptySamplesDirectory(manifest);
+                string SamplesDirectory = Path.Combine(HalodiPackageCreatorController.GetPackageDirectory(manifest), Paths.PackageSamplesFolder);
+                AssetDatabaseUtilities.CopyDirectory(HalodiPackageCreatorController.GetAssetsSampleDirectory(manifest), SamplesDirectory, true);
+            }
+            
+        }
+
+
+        internal static void EmptySamplesDirectory(PackageManifest manifest)
+        {
+            DirectoryInfo SamplesDirectory = new DirectoryInfo(Path.Combine(HalodiPackageCreatorController.GetPackageDirectory(manifest), Paths.PackageSamplesFolder));
+            if(SamplesDirectory.Exists)
+            {
+                foreach (FileInfo info in SamplesDirectory.EnumerateFiles("*", SearchOption.AllDirectories))
+                {
+                    info.Delete();
+                }
+
+                foreach (DirectoryInfo info in SamplesDirectory.EnumerateDirectories("*", SearchOption.AllDirectories))
+                {
+                    info.Delete();
+                }
+
+                SamplesDirectory.Delete();
+            }
+
+            
+
+        }
+
 
         internal static string Publish(PublicationModel model, PackageManifest manifest, string registry)
         {
+            CopySamples(manifest);
 
             using (System.Diagnostics.Process npm = new System.Diagnostics.Process())
             {
@@ -257,7 +294,7 @@ namespace Halodi.PackageCreator
                 }
 
                 writer.Close();
-
+                EmptySamplesDirectory(manifest);
                 return outputPath;
             }
         }
