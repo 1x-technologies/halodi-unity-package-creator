@@ -1,8 +1,7 @@
 {
   "name": "com.halodi.example-package",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "displayName": "Example Package",
-  "description": "Example package",
   "publishConfig": {
     "registry": "http://loki:4873"
   }

@@ -11,7 +11,7 @@ namespace Halodi.PackageCreator
         internal static List<PackageManifest> LoadPackages()
         {
 
-            DirectoryInfo packageDirectory = new DirectoryInfo(Path.Combine(AssetDatabaseUtilities.GetProjectRoot(), Paths.PackagesFolder));
+            DirectoryInfo packageDirectory = new DirectoryInfo(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder));
 
             List<PackageManifest> packages = new List<PackageManifest>();
             foreach (DirectoryInfo directory in packageDirectory.EnumerateDirectories())

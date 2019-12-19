@@ -59,7 +59,7 @@ namespace Halodi.PackageCreator
 
 
             string PackageFolderName = manifest.package_name;
-            string packageFolder = AssetDatabaseUtilities.CreateFolder(Paths.PackagesFolder, PackageFolderName);
+            string packageFolder = AssetDatabaseUtilities.CreateFolder(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder), PackageFolderName);
 
 
             AssemblyDefinition runtime = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.RuntimeFolder, manifest.name, false, false, null);

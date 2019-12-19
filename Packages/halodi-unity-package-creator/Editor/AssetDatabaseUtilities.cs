@@ -15,6 +15,11 @@ namespace Halodi.PackageCreator
             return dataInfo.Parent.ToString();
         }
 
+        internal static string GetRelativeToProjectRoot(string path)
+        {
+            return Path.Combine(GetProjectRoot(), path);
+        }
+
         internal static string ReadTextFile(string parentPath, string name)
         {
             string asset = Path.Combine(parentPath, name);

@@ -1,9 +1,0 @@
-{
-   "name" : "com.halodi.test",
-   "version" : "0.0.1",
-   "displayName" : "Test",
-   "description" : "Test package",
-   "publishConfig" : {
-      "registry" : "http://loki:4873"
-   }
-}
