@@ -15,6 +15,8 @@ namespace Halodi.PackageCreator
         public static string RuntimeFolder = "Runtime";
         public static string EditorFolder = "Editor";
 
+        public static string SamplesFolder = "Samples";
+
         public static string AssemblyDefinitionExtension = ".asmdef";
 
         public static string TestFolder = "Tests";

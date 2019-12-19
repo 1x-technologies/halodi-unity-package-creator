@@ -1,15 +1,11 @@
 {
-   "name" : "com.halodi.example-package.Editor",
-   "references" : [
-      "com.halodi.example-package.Runtime"
-   ],
-   "includePlatforms" : [
-      "Editor"
-   ],
-   "excludePlatforms" : [
-      
-   ],
-   "optionalUnityReferences" : [
-      
-   ]
+    "name": "com.halodi.example-package.Editor",
+    "references": [
+        "com.halodi.example-package.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "optionalUnityReferences": []
 }

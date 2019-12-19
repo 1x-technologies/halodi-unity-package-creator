@@ -1,16 +1,14 @@
 {
-   "name" : "com.halodi.example-package.Editor.Tests",
-   "references" : [
-      "com.halodi.example-package.Runtime",
-      "com.halodi.example-package.Editor"
-   ],
-   "includePlatforms" : [
-      "Editor"
-   ],
-   "excludePlatforms" : [
-      
-   ],
-   "optionalUnityReferences" : [
-      "TestAssemblies"
-   ]
+    "name": "com.halodi.example-package.Editor.Tests",
+    "references": [
+        "com.halodi.example-package.Runtime",
+        "com.halodi.example-package.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
 }

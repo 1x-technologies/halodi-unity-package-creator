@@ -1,15 +1,7 @@
 {
-   "name" : "com.halodi.example-package.Runtime",
-   "references" : [
-      
-   ],
-   "includePlatforms" : [
-      
-   ],
-   "excludePlatforms" : [
-      
-   ],
-   "optionalUnityReferences" : [
-      
-   ]
+    "name": "com.halodi.example-package.Runtime",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "optionalUnityReferences": []
 }

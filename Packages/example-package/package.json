@@ -1,8 +1,17 @@
 {
   "name": "com.halodi.example-package",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "displayName": "Example Package",
+  "description": "An example package",
   "publishConfig": {
     "registry": "http://loki:4873"
-  }
+  },
+  "samples": [
+    {
+      "displayName": "Example Package Samples",
+      "description": "Default samples",
+      "path": "Samples/example-package"
+    }
+  ],
+  "unity": "2019.2"
 }

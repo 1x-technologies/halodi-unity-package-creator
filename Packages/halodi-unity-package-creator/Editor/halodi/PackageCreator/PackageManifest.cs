@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+
 namespace Halodi.PackageCreator
 {
 
@@ -10,6 +12,14 @@ namespace Halodi.PackageCreator
         public class PublishConfig
         {
             public string registry = PublicationModel.DEFAULT_REGISTRY;
+        }
+
+        [System.Serializable]
+        public class Sample
+        {
+            public string displayName;
+            public string description;
+            public string path;
         }
 
         [NonSerialized]
@@ -30,6 +40,7 @@ namespace Halodi.PackageCreator
 
         public PublishConfig publishConfig = new PublishConfig();
 
+        public List<Sample> samples;
 
         public void OnBeforeSerialize()
         {
