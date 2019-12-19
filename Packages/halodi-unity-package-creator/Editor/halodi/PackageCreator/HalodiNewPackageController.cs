@@ -54,13 +54,6 @@ namespace Halodi.PackageCreator
 
         internal static void CreatePackage(PackageManifest manifest)
         {   
-            manifest.samples = new List<PackageManifest.Sample>();
-            PackageManifest.Sample defaultSample = new PackageManifest.Sample();
-            defaultSample.displayName = manifest.displayName + " Samples";
-            defaultSample.description = "Default samples";
-            defaultSample.path = Path.Combine(Paths.SamplesFolder, manifest.package_name);
-            manifest.samples.Add(defaultSample);
-
             manifest.OnBeforeSerialize();
 
 
@@ -70,15 +63,7 @@ namespace Halodi.PackageCreator
 
             AssemblyDefinition runtime = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.RuntimeFolder, manifest.name, false, false, null);
             AssemblyDefinition editor = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.EditorFolder, manifest.name, false, true, new List<string>{ runtime.name });
-            AssemblyDefinition samples = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.SamplesFolder, manifest.name, false, false, new List<string> { runtime.name });
 
-            foreach(PackageManifest.Sample sample in manifest.samples)
-            {
-                string sampleFolder = AssetDatabaseUtilities.CreateFolder(packageFolder, sample.path);
-                CreateGitKeep.Create(sampleFolder);
-            }
-            
-            
             string testFolder = AssetDatabaseUtilities.CreateFolder(packageFolder, Paths.TestFolder);
 
 
@@ -90,6 +75,10 @@ namespace Halodi.PackageCreator
             AssetDatabaseUtilities.CreateTextFile(CreateReadme(manifest), packageFolder, Paths.Readme);
             AssetDatabaseUtilities.CreateTextFile(CreateLicense(manifest), packageFolder, Paths.License);
             AssetDatabaseUtilities.CreateTextFile(CreateChangelog(manifest), packageFolder, Paths.Changelog);
+
+
+
+
 
             AssetDatabaseUtilities.UpdateAssetDatabase();
         }

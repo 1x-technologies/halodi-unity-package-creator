@@ -17,9 +17,9 @@ namespace Halodi.PackageCreator
         [System.Serializable]
         public class Sample
         {
-            public string displayName;
-            public string description;
-            public string path;
+            public string displayName = "";
+            public string description = "";
+            public string path = "";
         }
 
         [NonSerialized]

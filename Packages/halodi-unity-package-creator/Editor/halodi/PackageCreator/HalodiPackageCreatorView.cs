@@ -43,6 +43,10 @@ namespace Halodi.PackageCreator
                     SelectPackage(package);
                 }
 
+                if(GUILayout.Button("Add sample"))
+                {
+                    AddSample(package);
+                }
                 if(GUILayout.Button("Publish"))
                 {
                     PublishPackage(package);
@@ -76,6 +80,13 @@ namespace Halodi.PackageCreator
         {
             UnityEngine.Object instance = HalodiPackageCreatorController.GetPackageManifestObject(package);
             Selection.activeObject = instance;
+            CloseWindow();
+        }
+
+        private void AddSample(PackageManifest package)
+        {
+
+            HalodiAddSampleView.AddSample(package);
             CloseWindow();
         }
 
