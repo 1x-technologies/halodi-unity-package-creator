@@ -1,0 +1,16 @@
+{
+   "name" : "com.halodi.test.Editor.Tests",
+   "references" : [
+      "com.halodi.test.Runtime",
+      "com.halodi.test.Editor"
+   ],
+   "includePlatforms" : [
+      "Editor"
+   ],
+   "excludePlatforms" : [
+      
+   ],
+   "optionalUnityReferences" : [
+      "TestAssemblies"
+   ]
+}

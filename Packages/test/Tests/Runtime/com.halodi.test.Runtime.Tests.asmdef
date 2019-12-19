@@ -1,0 +1,15 @@
+{
+   "name" : "com.halodi.test.Runtime.Tests",
+   "references" : [
+      "com.halodi.test.Runtime"
+   ],
+   "includePlatforms" : [
+      
+   ],
+   "excludePlatforms" : [
+      
+   ],
+   "optionalUnityReferences" : [
+      "TestAssemblies"
+   ]
+}

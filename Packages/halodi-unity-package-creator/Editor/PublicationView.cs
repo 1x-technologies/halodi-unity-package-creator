@@ -12,7 +12,7 @@ namespace Halodi.PackageCreator
         [MenuItem("Halodi/Publish Package")] //creates a new menu tab
         internal static void StartPublishToNPM()
         {
-            if(PackageConfigurationController.PackageIsInitialized())
+            if(HalodiNewPackageController.PackageIsInitialized())
             {
                 EditorApplication.delayCall += () => EditorWindow.GetWindow<PublicationView>(true, "Package Publishing", true);  
             }

@@ -7,7 +7,7 @@ namespace Halodi.PackageCreator
 {
     internal class HalodiPackageCreatorView : EditorWindow
     {
-        HalodiPackages packages = null;
+        List<PackageManifest> packages = null;
         Vector2 scrollPos;
  
         [MenuItem("Halodi/Packages")] //creates a new menu tab
@@ -31,13 +31,13 @@ namespace Halodi.PackageCreator
             EditorGUILayout.BeginScrollView(scrollPos);
 
             
-            foreach (HalodiPackage package in packages.packages)
+            foreach (PackageManifest package in packages)
             {
                 GUIStyle boxStyle = new GUIStyle();
                 boxStyle.padding = new RectOffset(10, 10, 0, 0);
                 
                 EditorGUILayout.BeginHorizontal(boxStyle);
-                EditorGUILayout.LabelField(package.PackageName);
+                EditorGUILayout.LabelField(package.displayName);
                 if(GUILayout.Button("Edit"))
                 {
                     SelectPackage(package);
@@ -52,20 +52,28 @@ namespace Halodi.PackageCreator
             }
 
             EditorGUILayout.EndScrollView();
+
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("New package"))
+            {
+                NewPackage();
+            }
+
             if (GUILayout.Button("Close"))
             {
                 CloseWindow();
             }
+            EditorGUILayout.EndHorizontal();
         }
 
-        private void PublishPackage(HalodiPackage package)
+        private void PublishPackage(PackageManifest package)
         {
             throw new NotImplementedException();
         }
 
-        private void SelectPackage(HalodiPackage package)
+        private void SelectPackage(PackageManifest package)
         {
-            UnityEngine.Object instance = HalodiPackageCreatorController.GetPackageManifest(package);
+            UnityEngine.Object instance = HalodiPackageCreatorController.GetPackageManifestObject(package);
             Selection.activeObject = instance;
             CloseWindow();
         }
@@ -74,6 +82,12 @@ namespace Halodi.PackageCreator
         {
             Close();
             GUIUtility.ExitGUI();
+        }
+
+        private void NewPackage()
+        {
+            HalodiNewPackageView.ShowWindow();
+            CloseWindow();
         }
 
         internal static void ShowWindow()

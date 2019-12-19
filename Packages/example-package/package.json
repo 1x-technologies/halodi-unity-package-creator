@@ -3,19 +3,7 @@
   "version": "0.0.1",
   "displayName": "Example Package",
   "description": "Example package",
-  "unity": "2019.2",
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "license": "UNLICENSED",
-  "author": {
-    "name": "",
-    "email": "",
-    "url": "http://www.halodi.com"
-  },
   "publishConfig": {
     "registry": "http://loki:4873"
-  },
-  "keywords": []
+  }
 }

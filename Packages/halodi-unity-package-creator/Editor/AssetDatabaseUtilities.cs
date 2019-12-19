@@ -71,7 +71,7 @@ namespace Halodi.PackageCreator
 
         internal static void UpdateAssetDatabase()
         {
-            AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         }
 
         internal class AssemblyDefinition

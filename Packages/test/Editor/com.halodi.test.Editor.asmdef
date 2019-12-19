@@ -1,0 +1,15 @@
+{
+   "name" : "com.halodi.test.Editor",
+   "references" : [
+      "com.halodi.test.Runtime"
+   ],
+   "includePlatforms" : [
+      "Editor"
+   ],
+   "excludePlatforms" : [
+      
+   ],
+   "optionalUnityReferences" : [
+      
+   ]
+}

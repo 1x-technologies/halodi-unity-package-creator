@@ -7,12 +7,13 @@ using UnityEditor;
 using UnityEngine;
 using static Halodi.PackageCreator.AssetDatabaseUtilities;
 using fastJSON;
+using System.Text;
 
 namespace Halodi.PackageCreator
 {
 
 
-    internal class PackageConfigurationController
+    internal class HalodiNewPackageController
     {
         internal static HalodiPackage LoadPackage()
         {
@@ -33,19 +34,6 @@ namespace Halodi.PackageCreator
         {
             HalodiPackage package = LoadPackage();           
             return package != null && !string.IsNullOrEmpty(package.PackageFolder);
-        }
-
-        internal static UnityEngine.Object GetPackageManifestObject()
-        {
-            PackageManifest manifest = LoadManifest();
-            if(manifest == null)
-            {
-                return null;
-            }
-
-            string packageDirectory = Path.Combine(Paths.PackagesFolder, manifest.name);
-            string packageManifest = Path.Combine(packageDirectory, Paths.PackageManifest);
-            return AssetDatabase.LoadAssetAtPath(packageManifest, typeof(TextAsset));
         }
 
         internal static string PackageFolderOnDisk()
@@ -91,17 +79,50 @@ namespace Halodi.PackageCreator
             return manifest;
         }
 
-
-        private static void CreatePackage(PackageManifest manifest)
+        private static string CreateReadme(PackageManifest manifest)
         {
-            HalodiPackage halodiPackage = new HalodiPackage();
-            halodiPackage.PackageName = manifest.package_name;
-            halodiPackage.PackageNamespace = manifest.name_space;
-            halodiPackage.PackageFolder = manifest.package_name;
+            StringBuilder builder = new StringBuilder();
+            builder.Append("# "); builder.AppendLine(manifest.displayName);
 
-            AssetDatabaseUtilities.CreateJSONFile(halodiPackage, Paths.PackagesFolder, Paths.PackageDescription);
+            builder.AppendLine();
 
-            string packageFolder = AssetDatabaseUtilities.CreateFolder(Paths.PackagesFolder, halodiPackage.PackageFolder);
+            builder.AppendLine(manifest.description);
+
+            return builder.ToString();
+        }
+
+        private static string CreateChangelog(PackageManifest manifest)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("# ChangeLog"); 
+            builder.AppendLine();
+            builder.AppendLine();
+
+
+            builder.Append("## "); builder.Append(manifest.version); builder.Append(" - "); builder.AppendLine(DateTime.Now.ToString("yyyy-MM-dd")); 
+            builder.Append("- Package created");
+
+            return builder.ToString();
+        }
+
+        private static string CreateLicense(PackageManifest manifest)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("# License");
+            builder.AppendLine();
+            builder.Append("Copyright (C) "); builder.AppendLine(DateTime.Now.ToString("yyyy")); 
+            builder.AppendLine();
+            builder.Append(manifest.displayName); builder.AppendLine(" can not be copied and/or distributed without the express permission of the author(s).");
+            return builder.ToString();
+        }
+
+        internal static void CreatePackage(PackageManifest manifest)
+        {   
+            manifest.OnBeforeSerialize();
+
+
+            string PackageFolderName = manifest.package_name;
+            string packageFolder = AssetDatabaseUtilities.CreateFolder(Paths.PackagesFolder, PackageFolderName);
 
 
             AssemblyDefinition runtime = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.RuntimeFolder, manifest.name, false, false, null);
@@ -113,49 +134,38 @@ namespace Halodi.PackageCreator
             AssemblyDefinition runtimeTests = AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.RuntimeFolder, manifest.name, true, false, new List<string> { runtime.name });
             AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.EditorFolder, manifest.name, true, true, new List<string> { runtime.name, editor.name });
 
+
             AssetDatabaseUtilities.CreateJSONFile(manifest, packageFolder, Paths.PackageManifest);
-            AssetDatabaseUtilities.CreateTextFile("", packageFolder, Paths.Readme);
-            AssetDatabaseUtilities.CreateTextFile("", packageFolder, Paths.License);
-            AssetDatabaseUtilities.CreateTextFile("", packageFolder, Paths.Changelog);
+            AssetDatabaseUtilities.CreateTextFile(CreateReadme(manifest), packageFolder, Paths.Readme);
+            AssetDatabaseUtilities.CreateTextFile(CreateLicense(manifest), packageFolder, Paths.License);
+            AssetDatabaseUtilities.CreateTextFile(CreateChangelog(manifest), packageFolder, Paths.Changelog);
 
             AssetDatabaseUtilities.UpdateAssetDatabase();
         }
 
-        private static void UpdatePackage(HalodiPackage package, PackageManifest manifest)
+        internal static bool ValidateVersion(string version)
         {
-            package.PackageName = manifest.package_name;
-            package.PackageNamespace = manifest.name_space;
-            AssetDatabaseUtilities.UpdateJSONFile(package, Paths.PackagesFolder, Paths.PackageDescription);
-
-            string packageFolder = Path.Combine(Paths.PackagesFolder, package.PackageFolder);
-
-            if(!AssetDatabaseUtilities.IsValidFolder(packageFolder))
-            {
-                throw new IOException("Package folder " + package.PackageFolder + " does not exist");
-            }
-
-            AssetDatabaseUtilities.UpdateJSONFile(manifest, packageFolder, Paths.PackageManifest);
-            AssetDatabaseUtilities.UpdateAssetDatabase();
-        }
-
-        internal static void UpdateOrCreatePackage(PackageManifest manifest)
-        {
-            manifest.OnBeforeSerialize();
-            
-
-            if(!PackageIsInitialized())
-            {
-                CreatePackage(manifest);
-            }
-            else
-            {
-                UpdatePackage(LoadPackage(), manifest);
-            }
+            return Regex.IsMatch(version, @"^[0-9]+\.[0-9]+\.[0-9]+$");
         }
 
         internal static bool ValidateName(string name)
         {
-            return Regex.IsMatch(name, @"^[a-zA-Z][a-zA-Z0-9_\-\.]*$");
+            if(name.Trim().Length == 0)
+            {
+                return false;
+            }
+
+            return Regex.IsMatch(name, @"^[a-z][a-z0-9_\-]*$");
+        }
+
+        internal static bool ValidateNameSpace(string name)
+        {
+            return Regex.IsMatch(name, @"^[a-z][a-z0-9_\-\.]*[a-z0-9]$");
+        }
+
+        internal static bool PackageExists(string name)
+        {
+            return AssetDatabaseUtilities.IsValidFolder(Path.Combine(Paths.PackagesFolder, name));
         }
         
     }

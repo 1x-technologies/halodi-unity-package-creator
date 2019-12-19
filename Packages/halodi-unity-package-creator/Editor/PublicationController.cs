@@ -46,7 +46,7 @@ namespace Halodi.PackageCreator
         internal static string Publish(PublicationModel model)
         {
 
-            if (PackageConfigurationController.PackageIsInitialized())
+            if (HalodiNewPackageController.PackageIsInitialized())
             {
                 using (System.Diagnostics.Process npm = new System.Diagnostics.Process())
                 {
@@ -58,7 +58,7 @@ namespace Halodi.PackageCreator
                         UseShellExecute = false,
                         RedirectStandardError = true,
                         RedirectStandardOutput = true,
-                        WorkingDirectory = PackageConfigurationController.PackageFolderOnDisk()
+                        WorkingDirectory = HalodiNewPackageController.PackageFolderOnDisk()
                     };
 
                     npm.Start();

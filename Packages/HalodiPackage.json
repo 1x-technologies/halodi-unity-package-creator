@@ -1,5 +1,5 @@
 {
    "PackageNamespace" : "com.halodi",
-   "PackageName" : "halodi-unity-package-creator",
-   "PackageFolder" : "halodi-unity-package-creator"
+   "PackageName" : "example-package",
+   "PackageFolder" : "example-package"
 }
