@@ -19,6 +19,7 @@ namespace Halodi.PackageCreator
         void OnEnable()
         {
             packages = HalodiPackageCreatorController.LoadPackages();
+            minSize = new Vector2(640, 320);
         }
 
         void OnDisable()

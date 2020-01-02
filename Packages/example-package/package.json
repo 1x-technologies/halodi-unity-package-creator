@@ -6,7 +6,7 @@
   "publishConfig": {
     "registry": "http://loki:4873"
   },
-  "unity": "2019.2",
+  "unity": "2019.3",
   "samples": [
     {
       "displayName": "Example Samples",
