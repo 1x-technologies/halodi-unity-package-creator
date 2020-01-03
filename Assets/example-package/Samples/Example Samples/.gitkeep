@@ -1,0 +1,1 @@
+This file forces git to check-in the required Assets/ directory, even when it is empty. Do not remove.
