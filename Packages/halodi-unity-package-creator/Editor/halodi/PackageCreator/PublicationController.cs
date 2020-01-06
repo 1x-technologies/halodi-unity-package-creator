@@ -243,17 +243,7 @@ namespace Halodi.PackageCreator
             DirectoryInfo SamplesDirectory = new DirectoryInfo(Path.Combine(HalodiPackageCreatorController.GetPackageDirectory(manifest), Paths.PackageSamplesFolder));
             if(SamplesDirectory.Exists)
             {
-                foreach (FileInfo info in SamplesDirectory.EnumerateFiles("*", SearchOption.AllDirectories))
-                {
-                    info.Delete();
-                }
-
-                foreach (DirectoryInfo info in SamplesDirectory.EnumerateDirectories("*", SearchOption.AllDirectories))
-                {
-                    info.Delete();
-                }
-
-                SamplesDirectory.Delete();
+                SamplesDirectory.Delete(true);
             }
 
             
