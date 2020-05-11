@@ -1,0 +1,3 @@
+[submodule "Packages/halodi-unity-package-registry-manager"]
+	path = Packages/halodi-unity-package-registry-manager
+	url = https://github.com/Halodi/halodi-unity-package-registry-manager.git
