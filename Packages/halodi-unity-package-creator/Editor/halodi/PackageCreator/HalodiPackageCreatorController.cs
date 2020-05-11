@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -87,16 +89,22 @@ namespace Halodi.PackageCreator
             Directory.CreateDirectory(sampleFolder);
             CreateGitKeep.Create(sampleFolder);
                 
-            var manifestJSON = SimpleJSON.JSON.Parse(GetPackageManifestObject(manifest).text);
+
+                
+            JObject manifestJSON = JObject.Parse(GetPackageManifestObject(manifest).text);
             
+            var samplesJSON = (JArray) manifestJSON["samples"];
+            
+            
+            JObject next = new JObject(
+                    new JProperty("displayName", sample.displayName),
+                    new JProperty("description", sample.description),
+                    new JProperty("path", sample.path));
+            
+            samplesJSON.Add(next);
 
-            var samplesJSON = manifestJSON["samples"].AsArray;
-            int next = samplesJSON.Count;
-            samplesJSON[next]["displayName"] = sample.displayName;
-            samplesJSON[next]["description"] = sample.description;
-            samplesJSON[next]["path"] = sample.path;
 
-            AssetDatabaseUtilities.CreateTextFile(manifestJSON.ToString(4), GetPackageDirectory(manifest), Paths.PackageManifest);
+            AssetDatabaseUtilities.CreateTextFile(manifestJSON.ToString(), GetPackageDirectory(manifest), Paths.PackageManifest);
             AssetDatabaseUtilities.UpdateAssetDatabase();
         }
 

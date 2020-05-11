@@ -24,5 +24,7 @@
       "description": "A sample",
       "path": "Samples~/example-sample"
     }
-  ]
+  ],
+  "dependencies": {},
+  "type": "tool"
 }
