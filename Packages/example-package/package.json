@@ -1,6 +1,6 @@
 {
   "name": "com.halodi.example-package",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "displayName": "Example Package",
   "description": "An example package",
   "publishConfig": {

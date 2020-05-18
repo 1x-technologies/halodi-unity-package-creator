@@ -91,12 +91,14 @@ namespace Halodi.PackageCreator
 
 
                     PublicationController.Publish(PackageToPublish, GetRegistry());                
-                    EditorUtility.DisplayDialog("Success", "Uploaded " + PackageToPublish + " to " + registry, "Ok");
+                    EditorUtility.DisplayDialog("Success", "Uploaded " + PackageToPublish.name + " to " + registry, "Ok");
 
                 }
                 catch(System.IO.IOException e)
                 {
-                    EditorUtility.DisplayDialog("Failure", "Cannot upload " + PackageToPublish + System.Environment.NewLine + e.Message, "Ok");
+                    EditorUtility.DisplayDialog("Failure", "Cannot upload " + PackageToPublish.name + 
+                    System.Environment.NewLine + System.Environment.NewLine +
+                    "Error: " + e.Message, "Ok");
 
                 }
                 finally
