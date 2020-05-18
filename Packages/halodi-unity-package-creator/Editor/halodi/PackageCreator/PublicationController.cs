@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using Halodi.PackageRegistry;
 using UnityEditor;
+using UnityEditor.PackageManager;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 
@@ -65,7 +69,7 @@ namespace Halodi.PackageCreator
 
         internal static bool ValidateUser(string name)
         {
-            if(name.Trim().Length == 0)
+            if (name.Trim().Length == 0)
             {
                 return false;
             }
@@ -88,14 +92,14 @@ namespace Halodi.PackageCreator
                     RedirectStandardInput = true
                 };
                 npm.Start();
-                if(!npm.WaitForExit(2000))
+                if (!npm.WaitForExit(2000))
                 {
                     npm.Kill();
                     return false;
                 }
-                
 
-                if(npm.ExitCode == 0)
+
+                if (npm.ExitCode == 0)
                 {
                     string user = npm.StandardOutput.ReadToEnd().Trim();
                     return user == model.user;
@@ -110,22 +114,22 @@ namespace Halodi.PackageCreator
         internal static bool Login(PublicationModel model, string registry)
         {
 
-            if(!ValidateEmail(model.email))
+            if (!ValidateEmail(model.email))
             {
                 return false;
             }
 
-            if(!ValidateUser(model.user))
+            if (!ValidateUser(model.user))
             {
                 return false;
             }
 
-            if(model.password.Length == 0)
+            if (model.password.Length == 0)
             {
                 return false;
             }
 
-            if(IsLoggedIn(model, registry))
+            if (IsLoggedIn(model, registry))
             {
                 return true;
             }
@@ -146,21 +150,21 @@ namespace Halodi.PackageCreator
 
                 bool setUser = false;
                 bool setPassword = false;
-                
+
                 npm.Start();
 
                 StringBuilder sb = new StringBuilder();
-                while(!npm.StandardOutput.EndOfStream)
+                while (!npm.StandardOutput.EndOfStream)
                 {
                     int read = npm.StandardOutput.Read();
-                    char next = (char) read;
+                    char next = (char)read;
 
-                    if(next == ':')
+                    if (next == ':')
                     {
                         string field = sb.ToString().Trim();
-                        if(!setUser)
+                        if (!setUser)
                         {
-                            if(field != "Username")
+                            if (field != "Username")
                             {
                                 Debug.LogError("Cannot parse NPM output. Expected Username:, got " + field);
                                 npm.Kill();
@@ -170,9 +174,9 @@ namespace Halodi.PackageCreator
                             npm.StandardInput.WriteLine(model.user);
                             setUser = true;
                         }
-                        else if(!setPassword)
+                        else if (!setPassword)
                         {
-                            if(field != "Password")
+                            if (field != "Password")
                             {
                                 Debug.LogError("Cannot parse NPM output. Expected password:, got " + field);
                                 npm.Kill();
@@ -183,7 +187,7 @@ namespace Halodi.PackageCreator
                         }
                         else
                         {
-                            if(field != "Email")
+                            if (field != "Email")
                             {
                                 Debug.LogError("Cannot parse NPM output. Expected email:, got " + field);
                                 npm.Kill();
@@ -199,14 +203,14 @@ namespace Halodi.PackageCreator
                     {
                         sb.Append(next);
                     }
-                } 
+                }
 
-                if(!npm.WaitForExit(2000))
+                if (!npm.WaitForExit(2000))
                 {
                     npm.Kill();
                 }
-                
-                if(npm.ExitCode == 0)
+
+                if (npm.ExitCode == 0)
                 {
                     // Need to sleep for a little bit, otherwise the token on the server will not be valid
                     System.Threading.Thread.Sleep(1000);
@@ -218,8 +222,8 @@ namespace Halodi.PackageCreator
                     Debug.LogError(stderr);
                     return false;
                 }
-                
-                
+
+
 
             }
         }
@@ -228,65 +232,117 @@ namespace Halodi.PackageCreator
         {
             string AssetSampleDirectory = HalodiPackageCreatorController.GetAssetsSampleDirectory(manifest);
 
-            if(Directory.Exists(AssetSampleDirectory))
+            if (Directory.Exists(AssetSampleDirectory))
             {
                 EmptySamplesDirectory(manifest);
                 string SamplesDirectory = Path.Combine(HalodiPackageCreatorController.GetPackageDirectory(manifest), Paths.PackageSamplesFolder);
                 AssetDatabaseUtilities.CopyDirectory(HalodiPackageCreatorController.GetAssetsSampleDirectory(manifest), SamplesDirectory, true);
             }
-            
+
         }
 
 
         internal static void EmptySamplesDirectory(PackageManifest manifest)
         {
             DirectoryInfo SamplesDirectory = new DirectoryInfo(Path.Combine(HalodiPackageCreatorController.GetPackageDirectory(manifest), Paths.PackageSamplesFolder));
-            if(SamplesDirectory.Exists)
+            if (SamplesDirectory.Exists)
             {
                 SamplesDirectory.Delete(true);
             }
 
-            
+
 
         }
 
 
-        internal static string Publish(PublicationModel model, PackageManifest manifest, string registry)
+
+        internal static bool Publish(PublicationModel model, PackageManifest manifest, string registry, out string error)
         {
             CopySamples(manifest);
 
-            using (System.Diagnostics.Process npm = new System.Diagnostics.Process())
+
+            try
             {
 
-                npm.StartInfo = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = model.NPMExecutable,
-                    Arguments = "publish --registry " + registry,
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    WorkingDirectory = HalodiPackageCreatorController.GetPackageDirectory(manifest)
-                };
 
-                npm.Start();
+                manifest.OnAfterDeserialize();
+                string PackageFolder = Path.Combine(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder), manifest.package_name);
 
-                string outputPath = FileUtil.GetUniqueTempPathInProject();
-                StreamWriter writer = new StreamWriter(outputPath, false);
-
-                
-                while (!npm.StandardError.EndOfStream)
+                string folder = FileUtil.GetUniqueTempPathInProject();
+                PackRequest request = UnityEditor.PackageManager.Client.Pack(PackageFolder, folder);
+                while (!request.IsCompleted)
                 {
-                    writer.WriteLine(npm.StandardError.ReadLine());
-                }
-                while (!npm.StandardOutput.EndOfStream)
-                {
-                    writer.WriteLine(npm.StandardOutput.ReadLine());
+                    Thread.Sleep(100);
                 }
 
-                writer.Close();
-                EmptySamplesDirectory(manifest);
-                return outputPath;
+                if (request.Status == StatusCode.Success)
+                {
+                    PackOperationResult result = request.Result;
+                    Debug.Log(result.tarballPath);
+
+                    string data = PublicationManifest.Create(manifest, registry, result.tarballPath);
+
+                    bool success = NPM.Publish(registry, manifest.name, data, out error);
+
+                    File.Delete(result.tarballPath);
+                    Directory.Delete(folder);
+
+                    return success;
+                }
+                else
+                {
+                    if (request.Error != null)
+                    {
+                        error = request.Error.message;
+                    }
+                    else
+                    {
+                        error = "Cannot pack package";
+                    }
+
+                    return false;
+                }
             }
+            finally
+            {
+                EmptySamplesDirectory(manifest);
+            }
+
+
+
+
+            // using (System.Diagnostics.Process npm = new System.Diagnostics.Process())
+            // {
+
+            //     npm.StartInfo = new System.Diagnostics.ProcessStartInfo
+            //     {
+            //         FileName = model.NPMExecutable,
+            //         Arguments = "publish --registry " + registry,
+            //         UseShellExecute = false,
+            //         RedirectStandardError = true,
+            //         RedirectStandardOutput = true,
+            //         WorkingDirectory = HalodiPackageCreatorController.GetPackageDirectory(manifest)
+            //     };
+
+            //     npm.Start();
+
+            //     string outputPath = FileUtil.GetUniqueTempPathInProject();
+            //     StreamWriter writer = new StreamWriter(outputPath, false);
+
+
+            //     while (!npm.StandardError.EndOfStream)
+            //     {
+            //         writer.WriteLine(npm.StandardError.ReadLine());
+            //     }
+            //     while (!npm.StandardOutput.EndOfStream)
+            //     {
+            //         writer.WriteLine(npm.StandardOutput.ReadLine());
+            //     }
+
+            //     writer.Close();
+            //     EmptySamplesDirectory(manifest);
+            //     return outputPath;
+            // }
         }
 
     }

@@ -20,7 +20,7 @@ namespace Halodi.PackageCreator
 
         private string GetRegistry()
         {
-            if(PackageToPublish.publishConfig == null)
+            if(PackageToPublish.publishConfig != null)
             {
                 return PackageToPublish.publishConfig.registry;
             }
@@ -107,30 +107,35 @@ namespace Halodi.PackageCreator
             {
                 string registry = GetRegistry();
                 EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + registry, 0.25f);
+
+
+                bool status;
+                string error;
                 try
                 {
                     Debug.Log("Publishing package to " + registry);
                 
-                    if(PublicationController.Login(publicationModel, GetRegistry()))
-                    {
-                        EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + registry, 0.5f);
-                        string output = PublicationController.Publish(publicationModel, PackageToPublish, GetRegistry());
-                        UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal(output, 0, 0);
+                    EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + registry, 0.5f);
 
-                    }
-                    else
-                    {
-                        EditorUtility.ClearProgressBar();
-                        EditorUtility.DisplayDialog("Login failed", "Cannot login to " + registry, "Close");
-                    }
+
+                    status = PublicationController.Publish(publicationModel, PackageToPublish, GetRegistry(), out error);                
 
                 }
-                catch(System.Exception e)
+                finally
                 {
-                    Debug.LogError(e);
+                    EditorUtility.ClearProgressBar();
                 }
 
-                EditorUtility.ClearProgressBar();
+                if(status)
+                {
+                    EditorUtility.DisplayDialog("Success", "Uploaded " + PackageToPublish + System.Environment.NewLine + error, "Ok");
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("Failure", "Cannot upload " + PackageToPublish + System.Environment.NewLine + error, "Ok");
+                }
+
+                
 
             }
 

@@ -14,7 +14,7 @@
     "com.unity.collab-proxy": "1.2.16",
     "com.unity.ext.nunit": "1.0.0",
     "com.unity.ide.rider": "1.1.4",
-    "com.unity.ide.vscode": "1.1.4",
+    "com.unity.ide.vscode": "1.2.0",
     "com.unity.test-framework": "1.1.13",
     "com.unity.textmeshpro": "2.0.1",
     "com.unity.timeline": "1.2.6",
@@ -50,11 +50,5 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  },
-  "lock": {
-    "com.halodi.halodi-unity-package-registry-manager": {
-      "revision": "HEAD",
-      "hash": "b93148a78c223128b1d54046dbaddcb27bbccff6"
-    }
   }
 }

@@ -49,6 +49,8 @@ namespace Halodi.PackageCreator
 
         public void OnAfterDeserialize()
         {
+            package_name = name.Substring(name.LastIndexOf(".") + 1);
+            name_space = name.Substring(0, name.LastIndexOf("."));
         }
     }
 

@@ -31,6 +31,7 @@ namespace Halodi.PackageCreator
                     else
                     {
                         PackageManifest manifest = JsonUtility.FromJson<PackageManifest>(halodiPackage);
+                        manifest.OnAfterDeserialize();
                         manifest.filesystem_location = manifestPath;
                         packages.Add(manifest);
                     }

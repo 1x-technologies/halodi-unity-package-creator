@@ -25,6 +25,8 @@
       "path": "Samples~/example-sample"
     }
   ],
-  "dependencies": {},
+  "dependencies": {
+    "com.halodi.halodi-unity-package-registry-manager": "0.0.1"
+  },
   "type": "tool"
 }
