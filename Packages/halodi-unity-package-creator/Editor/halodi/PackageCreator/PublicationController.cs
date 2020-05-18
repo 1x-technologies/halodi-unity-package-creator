@@ -46,93 +46,21 @@ namespace Halodi.PackageCreator
 
 
 
-        internal static bool Publish(PackageManifest manifest, string registry, out string error)
+        internal static void Publish(PackageManifest manifest, string registry)
         {
             CopySamples(manifest);
 
-
             try
             {
-
-
                 manifest.OnAfterDeserialize();
                 string PackageFolder = Path.Combine(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder), manifest.package_name);
 
-                string folder = FileUtil.GetUniqueTempPathInProject();
-                PackRequest request = UnityEditor.PackageManager.Client.Pack(PackageFolder, folder);
-                while (!request.IsCompleted)
-                {
-                    Thread.Sleep(100);
-                }
-
-                if (request.Status == StatusCode.Success)
-                {
-                    PackOperationResult result = request.Result;
-                    Debug.Log(result.tarballPath);
-
-                    string data = PublicationManifest.Create(manifest, registry, result.tarballPath);
-
-                    bool success = NPM.Publish(registry, manifest.name, data, out error);
-
-                    File.Delete(result.tarballPath);
-                    Directory.Delete(folder);
-
-                    return success;
-                }
-                else
-                {
-                    if (request.Error != null)
-                    {
-                        error = request.Error.message;
-                    }
-                    else
-                    {
-                        error = "Cannot pack package";
-                    }
-
-                    return false;
-                }
+                NPM.Publish(PackageFolder, registry);
             }
             finally
             {
                 EmptySamplesDirectory(manifest);
             }
-
-
-
-
-            // using (System.Diagnostics.Process npm = new System.Diagnostics.Process())
-            // {
-
-            //     npm.StartInfo = new System.Diagnostics.ProcessStartInfo
-            //     {
-            //         FileName = model.NPMExecutable,
-            //         Arguments = "publish --registry " + registry,
-            //         UseShellExecute = false,
-            //         RedirectStandardError = true,
-            //         RedirectStandardOutput = true,
-            //         WorkingDirectory = HalodiPackageCreatorController.GetPackageDirectory(manifest)
-            //     };
-
-            //     npm.Start();
-
-            //     string outputPath = FileUtil.GetUniqueTempPathInProject();
-            //     StreamWriter writer = new StreamWriter(outputPath, false);
-
-
-            //     while (!npm.StandardError.EndOfStream)
-            //     {
-            //         writer.WriteLine(npm.StandardError.ReadLine());
-            //     }
-            //     while (!npm.StandardOutput.EndOfStream)
-            //     {
-            //         writer.WriteLine(npm.StandardOutput.ReadLine());
-            //     }
-
-            //     writer.Close();
-            //     EmptySamplesDirectory(manifest);
-            //     return outputPath;
-            // }
         }
 
     }

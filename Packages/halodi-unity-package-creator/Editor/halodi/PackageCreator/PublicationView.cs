@@ -83,8 +83,6 @@ namespace Halodi.PackageCreator
                 EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + registry, 0.25f);
 
 
-                bool status;
-                string error;
                 try
                 {
                     Debug.Log("Publishing package to " + registry);
@@ -92,24 +90,19 @@ namespace Halodi.PackageCreator
                     EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + registry, 0.5f);
 
 
-                    status = PublicationController.Publish(PackageToPublish, GetRegistry(), out error);                
+                    PublicationController.Publish(PackageToPublish, GetRegistry());                
+                    EditorUtility.DisplayDialog("Success", "Uploaded " + PackageToPublish + " to " + registry, "Ok");
+
+                }
+                catch(System.IO.IOException e)
+                {
+                    EditorUtility.DisplayDialog("Failure", "Cannot upload " + PackageToPublish + System.Environment.NewLine + e.Message, "Ok");
 
                 }
                 finally
                 {
                     EditorUtility.ClearProgressBar();
-                }
-
-                if(status)
-                {
-                    EditorUtility.DisplayDialog("Success", "Uploaded " + PackageToPublish + System.Environment.NewLine + error, "Ok");
-                }
-                else
-                {
-                    EditorUtility.DisplayDialog("Failure", "Cannot upload " + PackageToPublish + System.Environment.NewLine + error, "Ok");
-                }
-
-                
+                }               
 
             }
 
