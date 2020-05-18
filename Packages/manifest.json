@@ -1,5 +1,16 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "Loki",
+      "url": "http://loki:4873",
+      "scopes": [
+        "com.halodi"
+      ]
+    }
+  ],
   "dependencies": {
+    "com.halodi.halodi-unity-common": "0.0.1",
+    "com.halodi.halodi-unity-package-registry-manager": "https://github.com/Halodi/halodi-unity-package-registry-manager.git",
     "com.unity.collab-proxy": "1.2.16",
     "com.unity.ext.nunit": "1.0.0",
     "com.unity.ide.rider": "1.1.4",
@@ -39,5 +50,11 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
+  },
+  "lock": {
+    "com.halodi.halodi-unity-package-registry-manager": {
+      "revision": "HEAD",
+      "hash": "b93148a78c223128b1d54046dbaddcb27bbccff6"
+    }
   }
 }
