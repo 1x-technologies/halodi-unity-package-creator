@@ -56,6 +56,8 @@ namespace Halodi.PackageCreator
             j["dist-tags"] = new JObject();
             j["dist-tags"]["latest"] = manifest.version;
 
+            j["readme"] = 
+
             j["versions"] = new JObject();
             j["versions"][manifest.version] = JObject.Parse(JsonUtility.ToJson(manifest));
             j["versions"][manifest.version]["_id"] = manifest.name + "@" + manifest.version;

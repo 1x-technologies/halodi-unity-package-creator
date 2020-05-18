@@ -11,7 +11,7 @@ namespace Halodi.PackageCreator
         [System.Serializable]
         public class PublishConfig
         {
-            public string registry = PublicationModel.DEFAULT_REGISTRY;
+            public string registry = "http://loki:4873";
         }
 
         [System.Serializable]
