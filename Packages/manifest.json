@@ -1,8 +1,8 @@
 {
   "scopedRegistries": [
     {
-      "name": "Loki",
-      "url": "http://loki:4873",
+      "name": "Halodi",
+      "url": "https://npm.halodi.com:4873",
       "scopes": [
         "com.halodi"
       ]
