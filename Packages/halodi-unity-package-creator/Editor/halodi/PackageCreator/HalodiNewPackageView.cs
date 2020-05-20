@@ -7,10 +7,12 @@ namespace Halodi.PackageCreator
     internal class HalodiNewPackageView : EditorWindow
     {
         PackageManifest manifest = null;
+        RegistrySelector registrySelector = null;
 
         void OnEnable()
         {
             manifest = new PackageManifest();
+            registrySelector = new RegistrySelector();
         }
 
         void OnDisable()
@@ -32,7 +34,7 @@ namespace Halodi.PackageCreator
 
 
                 EditorGUILayout.LabelField("Publication configuration");
-                manifest.publishConfig.registry =  EditorGUILayout.TextField("\tregistry: ", manifest.publishConfig.registry);
+                manifest.publishConfig.registry =  registrySelector.SelectRegistry("\t", manifest.publishConfig.registry);
 
                 if (GUILayout.Button("Create"))
                 {
@@ -82,6 +84,7 @@ namespace Halodi.PackageCreator
             {
 
                 EditorUtility.DisplayProgressBar("Creating package", "Creating new package " + manifest.displayName, 0.5f);
+
                 
                 try
                 {

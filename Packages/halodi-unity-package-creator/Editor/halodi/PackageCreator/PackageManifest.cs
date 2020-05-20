@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Halodi.PackageCreator
 {
@@ -11,7 +12,7 @@ namespace Halodi.PackageCreator
         [System.Serializable]
         public class PublishConfig
         {
-            public string registry = "http://loki:4873";
+            public string registry = "";
         }
 
         [System.Serializable]
@@ -45,6 +46,15 @@ namespace Halodi.PackageCreator
         public void OnBeforeSerialize()
         {
             name = name_space + "." + package_name;
+
+            if(publishConfig != null)
+            {
+                if(string.IsNullOrEmpty(publishConfig.registry))
+                {
+                    publishConfig = null;
+                }
+                
+            }
         }
 
         public void OnAfterDeserialize()

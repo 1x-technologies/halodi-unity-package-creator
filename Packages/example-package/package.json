@@ -1,11 +1,8 @@
 {
   "name": "com.halodi.example-package",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "displayName": "Example Package",
   "description": "An example package",
-  "publishConfig": {
-    "registry": "http://loki:4873"
-  },
   "unity": "2019.3",
   "author": {
     "name": "Jesper Smith",

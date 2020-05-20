@@ -14,9 +14,6 @@
     "email": "jesper@halodi.com",
     "url": "http://www.halodi.com"
   },
-  "publishConfig": {
-    "registry": "http://loki:4873"
-  },
   "keywords": [],
   "samples": [
     {

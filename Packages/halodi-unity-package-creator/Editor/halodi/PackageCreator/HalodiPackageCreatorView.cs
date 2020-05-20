@@ -10,7 +10,7 @@ namespace Halodi.PackageCreator
         List<PackageManifest> packages = null;
         Vector2 scrollPos;
  
-        [MenuItem("Packages/Manage packages in project")] //creates a new menu tab
+        [MenuItem("Packages/Manage packages in project", false, 0)] //creates a new menu tab
         internal static void EditPackageConfiguration()
         {
             HalodiPackageCreatorView.ShowWindow();
