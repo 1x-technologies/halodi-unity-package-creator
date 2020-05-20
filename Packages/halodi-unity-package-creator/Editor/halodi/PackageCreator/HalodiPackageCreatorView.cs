@@ -41,7 +41,7 @@ namespace Halodi.PackageCreator
 
         void OnGUI()
         {
-            EditorGUILayout.LabelField("Packages in this project");
+            EditorGUILayout.LabelField("Packages in this project", EditorStyles.whiteLargeLabel);
 
             EditorGUILayout.Space();
             
@@ -90,10 +90,6 @@ namespace Halodi.PackageCreator
                 {
                     AddSample(package);
                 }
-                if(GUILayout.Button("Publish"))
-                {
-                    PublishPackage(package);
-                }
                 if(GUILayout.Button("Pack"))
                 {
                     Pack(package);
@@ -105,6 +101,11 @@ namespace Halodi.PackageCreator
             EditorGUILayout.EndScrollView();
 
             EditorGUILayout.BeginHorizontal();
+            if( GUILayout.Button("Publish"))
+            {
+                PublishPackages();
+            }
+
             if (GUILayout.Button("New package"))
             {
                 NewPackage();
@@ -120,28 +121,28 @@ namespace Halodi.PackageCreator
         private void ApplyGroupVersion()
         {
             
-                if(PackageGroupConfiguration.IsValidVersion(groupVersion))
+            if(PackageGroupConfiguration.IsValidVersion(groupVersion))
+            {
+                PackageGroupConfiguration.SetGroupVersion(groupVersion);
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Invalid version", "Version is not a semantic version (major.minor.patch).", "OK");
+                if(PackageGroupConfiguration.IsUseGroupVersion())
                 {
-                    PackageGroupConfiguration.SetGroupVersion(groupVersion);
+                    groupVersion = PackageGroupConfiguration.GetGroupVersion();
                 }
                 else
                 {
-                    EditorUtility.DisplayDialog("Invalid version", "Version is not a semantic version (major.minor.patch).", "OK");
-                    if(PackageGroupConfiguration.IsUseGroupVersion())
-                    {
-                        groupVersion = PackageGroupConfiguration.GetGroupVersion();
-                    }
-                    else
-                    {
-                        groupVersion = "0.0.0";
-                    }
+                    groupVersion = "0.0.0";
                 }
+            }
         }
 
 
-        private void PublishPackage(PackageManifest package)
+        private void PublishPackages()
         {
-            PublicationView.PublishPackage(package);
+            PublicationView.PublishPackages(packages);
             CloseWindow();
         }
 

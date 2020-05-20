@@ -13,6 +13,7 @@ namespace Halodi.PackageCreator
         private string[] registries;
 
         private int selectedRegistry;
+        
         public RegistrySelector()
         {
             string[] unescapedRegistries = new CredentialManager().Registries;

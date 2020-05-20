@@ -1,83 +1,112 @@
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using System.Collections.Generic;
+using System;
 
 namespace Halodi.PackageCreator
 {
+    internal class PublicationPackageView
+    {
+        internal bool publish;
+        internal PackageManifest package;
+        internal RegistrySelector RegistrySelector;
+        internal string registry;
+
+        public PublicationPackageView(PackageManifest package)
+        {
+            this.publish = false;
+            this.package = package;
+            this.RegistrySelector = new RegistrySelector();
+
+            if (package.publishConfig != null && !string.IsNullOrEmpty(package.publishConfig.registry))
+            {
+                this.registry = package.publishConfig.registry;
+            }
+        }
+    }
+
 
     internal class PublicationView : EditorWindow
     {
 
-        private PackageManifest PackageToPublish = null;
-        private RegistrySelector RegistrySelector = null;
+        private List<PublicationPackageView> PackagesToPublish = null;
 
-        private string registry;
+        private bool publishAll;
+
+        private Vector2 scrollPos;
 
         void OnEnable()
         {
-            RegistrySelector = new RegistrySelector();
-            registry = "";
+            PackagesToPublish = null;
+            publishAll = false;
         }
 
-        private bool HasPublishConfigRegistry()
+        private void SetPackages(List<PackageManifest> packages)
         {
-            return PackageToPublish.publishConfig != null && !string.IsNullOrEmpty(PackageToPublish.publishConfig.registry);
+            PackagesToPublish = new List<PublicationPackageView>();
+            foreach (var package in packages)
+            {
+                PackagesToPublish.Add(new PublicationPackageView(package));
+            }
         }
 
-        private string GetRegistry()
+        private void PackageGUI(PublicationPackageView packageView)
         {
-            if (HasPublishConfigRegistry())
+            EditorGUI.BeginChangeCheck();
+            packageView.publish = EditorGUILayout.BeginToggleGroup(packageView.package.displayName, packageView.publish);
+            if (EditorGUI.EndChangeCheck())
             {
-                return PackageToPublish.publishConfig.registry;
+                if (!packageView.publish)
+                {
+                    publishAll = false;
+                }
             }
-            else
-            {
-                return registry;
-            }
+
+            packageView.registry = packageView.RegistrySelector.SelectRegistry("\t", packageView.registry);
+            EditorGUILayout.EndToggleGroup();
         }
 
         void OnGUI()
         {
-            if (PackageToPublish != null)
+            if (PackagesToPublish != null)
             {
-                EditorGUILayout.LabelField("Publishing " + PackageToPublish.displayName, EditorStyles.whiteLargeLabel);
+                EditorGUILayout.LabelField("Publishing packages", EditorStyles.whiteLargeLabel);
+
+                EditorGUILayout.Separator();
+
+                EditorGUI.BeginChangeCheck();
+                publishAll = EditorGUILayout.ToggleLeft("Publish all packages", publishAll);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    foreach (PublicationPackageView packageView in PackagesToPublish)
+                    {
+                        packageView.publish = publishAll;
+                    }
+                }
+
 
                 EditorGUILayout.Separator();
 
 
-                if (HasPublishConfigRegistry())
+
+                scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+                foreach (PublicationPackageView packageView in PackagesToPublish)
                 {
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Package registry: " + PackageToPublish.publishConfig.registry);
-                    if (GUILayout.Button("Edit"))
-                    {
-                        Close();
-                        EditRegistry();
-                        GUIUtility.ExitGUI();
-                    }
-                    EditorGUILayout.EndHorizontal();
+                    PackageGUI(packageView);
                 }
-                else
-                {
-                    registry = RegistrySelector.SelectRegistry("", registry);
-                }
+                EditorGUILayout.EndScrollView();
+
+
+
 
                 EditorGUILayout.Separator();
 
                 if (GUILayout.Button("Publish"))
                 {
-
-                    if (string.IsNullOrEmpty(GetRegistry()))
-                    {
-                        EditorUtility.DisplayDialog("Failed", "No registry set for publication.", "OK");
-                    }
-                    else
-                    {
-                        Close();
-                        Publish();
-                        GUIUtility.ExitGUI();
-                    }
-
+                    Close();
+                    Publish();
+                    GUIUtility.ExitGUI();
 
                 }
 
@@ -89,49 +118,73 @@ namespace Halodi.PackageCreator
             }
         }
 
-        void EditRegistry()
-        {
-            if (PackageToPublish != null)
-            {
-                EditorUtility.DisplayDialog("Edit registry", "A publishConfig section is set in package.json. You can change the registry in the text editor that will be opened.", "Ok");
-                UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal(Path.Combine(HalodiPackageCreatorController.GetPackageDirectory(PackageToPublish), Paths.PackageManifest), 0, 0);
-            }
-
-
-        }
 
         void Publish()
         {
-            if (PackageToPublish != null)
+            if (PackagesToPublish != null)
             {
-                string registry = GetRegistry();
-
-
-                EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + registry, 0.25f);
-
-
-                try
+                int packagesToPublish = 0;
+                foreach (var packageView in PackagesToPublish)
                 {
-                    Debug.Log("Publishing package to " + registry);
-
-                    EditorUtility.DisplayProgressBar("Publishing package", "Publishing package to " + registry, 0.5f);
-
-
-                    PublicationController.Publish(PackageToPublish, GetRegistry());
-                    EditorUtility.DisplayDialog("Success", "Uploaded " + PackageToPublish.name + " to " + registry, "Ok");
-
+                    if (packageView.publish)
+                    {
+                        packagesToPublish++;
+                    }
                 }
-                catch (System.IO.IOException e)
+
+                if (packagesToPublish == 0)
                 {
-                    EditorUtility.DisplayDialog("Failure", "Cannot upload " + PackageToPublish.name +
-                    System.Environment.NewLine + System.Environment.NewLine +
-                    "Error: " + e.Message, "Ok");
+                    EditorUtility.DisplayDialog("Error", "No packages to publish selected.", "OK");
+                    return;
+                }
 
-                }
-                finally
+
+                EditorUtility.DisplayProgressBar("Publishing package", "Publishing packages", 0f);
+
+                string result = "";
+                int currentPackage = 0;
+                bool failures = false;
+                foreach (var packageView in PackagesToPublish)
                 {
-                    EditorUtility.ClearProgressBar();
+                    if (packageView.publish)
+                    {
+                        EditorUtility.DisplayProgressBar("Publishing package", "Publishing packages " + packageView.package.displayName + " to " + packageView.registry, (float)currentPackage / (float)packagesToPublish);
+
+                        if (string.IsNullOrEmpty(packageView.registry))
+                        {
+                            failures = true;
+                            result += "[Error] No registry set for " + packageView.package.displayName + Environment.NewLine;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                PublicationController.Publish(packageView.package, packageView.registry);
+                                result += "[Success] Publishing " + packageView.package.displayName + " succeeded." + Environment.NewLine;
+                            }
+                            catch (System.IO.IOException e)
+                            {
+                                failures = true;
+                                result += "[Error] Publishing " + packageView.package.displayName + " failed with error:" + Environment.NewLine + "\t" + e.Message + Environment.NewLine;
+                            }
+                        }
+
+                        currentPackage++;
+                    }
                 }
+                EditorUtility.ClearProgressBar();
+
+                string message;
+                if (failures)
+                {
+                    message = "Published with errors." + Environment.NewLine + result;
+                }
+                else
+                {
+                    message = "Published all packages. " + Environment.NewLine + result;
+                }
+                EditorUtility.DisplayDialog("Publishing finished", message, "OK");
+
 
             }
 
@@ -144,12 +197,14 @@ namespace Halodi.PackageCreator
         }
 
 
-        public static void PublishPackage(PackageManifest package)
+        public static void PublishPackages(List<PackageManifest> packages)
         {
             EditorApplication.delayCall += () =>
             {
                 PublicationView publicationView = EditorWindow.GetWindow<PublicationView>(true, "Package Publishing", true);
-                publicationView.PackageToPublish = package;
+
+
+                publicationView.SetPackages(packages);
             };
         }
 
