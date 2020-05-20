@@ -52,6 +52,10 @@ namespace Halodi.PackageCreator
                 {
                     PublishPackage(package);
                 }
+                if(GUILayout.Button("Pack"))
+                {
+                    Pack(package);
+                }
 
                 EditorGUILayout.EndHorizontal();
             }
@@ -89,6 +93,11 @@ namespace Halodi.PackageCreator
 
             HalodiAddSampleView.AddSample(package);
             CloseWindow();
+        }
+
+        private void Pack(PackageManifest package)
+        {
+            PublicationController.Pack(package);
         }
 
         private void CloseWindow()

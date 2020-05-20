@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -48,14 +49,53 @@ namespace Halodi.PackageCreator
 
         internal static void Publish(PackageManifest manifest, string registry)
         {
-            CopySamples(manifest);
-
             try
             {
+                CopySamples(manifest);
+
                 manifest.OnAfterDeserialize();
                 string PackageFolder = Path.Combine(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder), manifest.package_name);
 
                 NPM.Publish(PackageFolder, registry);
+            }
+            finally
+            {
+                EmptySamplesDirectory(manifest);
+            }
+        }
+
+
+        internal static void Pack(PackageManifest manifest)
+        {
+            try
+            {
+                CopySamples(manifest);
+                manifest.OnAfterDeserialize();
+                string packageFolder = Path.Combine(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder), manifest.package_name);
+
+
+                string folder = FileUtil.GetUniqueTempPathInProject();
+                PackRequest request = UnityEditor.PackageManager.Client.Pack(packageFolder, folder);
+                while (!request.IsCompleted)
+                {
+                    Thread.Sleep(100);
+                }
+
+                if (request.Status != StatusCode.Success)
+                {
+                    string message = "Cannot pack package.";
+                    if (request.Error != null)
+                    {
+                        message += Environment.NewLine + request.Error.message;
+
+                    }
+                    EditorUtility.DisplayDialog("Failure", message, "OK");
+                }
+
+
+                PackOperationResult result = request.Result;
+                EditorUtility.RevealInFinder(result.tarballPath);
+
             }
             finally
             {
