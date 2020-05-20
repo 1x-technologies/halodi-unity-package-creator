@@ -1,6 +1,6 @@
 {
   "name": "com.halodi.example-package",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "displayName": "Example Package",
   "description": "An example package",
   "unity": "2019.3",

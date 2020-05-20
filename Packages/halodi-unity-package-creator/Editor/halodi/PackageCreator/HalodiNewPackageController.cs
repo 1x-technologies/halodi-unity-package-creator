@@ -81,6 +81,11 @@ namespace Halodi.PackageCreator
 
         internal static bool ValidateVersion(string version)
         {
+            if(Regex.IsMatch(version, @"^0+\.0+\.0+$"))
+            {
+                return false;
+            }
+
             return Regex.IsMatch(version, @"^[0-9]+\.[0-9]+\.[0-9]+$");
         }
 
