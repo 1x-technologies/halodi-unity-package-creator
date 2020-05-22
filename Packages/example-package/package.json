@@ -1,0 +1,28 @@
+{
+  "name": "com.halodi.example-package",
+  "version": "0.0.10",
+  "displayName": "Example Package",
+  "description": "An example package",
+  "unity": "2019.3",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Jesper Smith",
+    "email": "jesper@halodi.com",
+    "url": "http://www.halodi.com"
+  },
+  "publishConfig": {
+    "registry": "https://api.bintray.com/npm/halodirobotics/unity"
+  },
+  "samples": [
+    {
+      "displayName": "Example Samples",
+      "description": "Just some example samples",
+      "path": "Samples~/Example Samples"
+    },
+    {
+      "displayName": "wa",
+      "description": "wa",
+      "path": "Samples~/wa"
+    }
+  ]
+}

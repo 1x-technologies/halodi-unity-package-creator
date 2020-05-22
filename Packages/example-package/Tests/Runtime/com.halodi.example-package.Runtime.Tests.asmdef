@@ -1,0 +1,11 @@
+{
+    "name": "com.halodi.example-package.Runtime.Tests",
+    "references": [
+        "com.halodi.example-package.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

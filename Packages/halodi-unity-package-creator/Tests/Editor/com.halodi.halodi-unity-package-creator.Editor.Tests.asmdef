@@ -1,0 +1,21 @@
+{
+    "name": "com.halodi.halodi-unity-package-creator.Editor.Tests",
+    "references": [
+        "com.halodi.halodi-unity-package-creator.Runtime",
+        "com.halodi.halodi-unity-package-creator.Editor",
+        "com.halodi.halodi-unity-package-creator.Runtime.Tests"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

@@ -1,0 +1,7 @@
+{
+    "name": "com.halodi.example-package.Runtime",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "optionalUnityReferences": []
+}
