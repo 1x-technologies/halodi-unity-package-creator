@@ -17,6 +17,8 @@ Apache 2.0
 
 ## Installation
 
+**via Git URL**
+
 First, add "Halodi Unity Package Registry Manager" to your project. In Unity, go to Window -> Package manager, and "Add package from git URL" (Press + in the top left corner)
 
 ```
@@ -36,7 +38,6 @@ Always auth: false
 Token: [Leave empty]
 ```
 
-
 Then go to Packages -> Add Packages (Bulk) and enter
 
 ```
@@ -44,6 +45,14 @@ com.halodi.halodi-unity-package-registry-manager
 ```
 
 Press Add packages to add "Halodi Unity Package Creator" to your project.
+
+**via [OpenUPM](https://openupm.com/packages/com.halodi.halodi-unity-package-creator/)**
+
+Requries [OpenUPM-CLI](https://github.com/openupm/openupm-cli#openupm-cli)
+
+```
+openupm add com.halodi.halodi-unity-package-creator
+```
 
 ## Usage
 
