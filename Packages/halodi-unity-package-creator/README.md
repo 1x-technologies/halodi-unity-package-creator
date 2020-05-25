@@ -2,7 +2,7 @@
 
 Tools for creating, editing and publishing Unity packages.
 
-![Screenshot of main functionality](Resources/halodi-unity-package-creator/halodi-unity-package-creator-screenshot.png | width=60%)
+![Screenshot of main functionality](Resources/halodi-unity-package-creator/halodi-unity-package-creator-screenshot.png)
 
 
 Functionality 
