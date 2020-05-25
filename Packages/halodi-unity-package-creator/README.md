@@ -2,6 +2,9 @@
 
 Tools for creating, editing and publishing Unity packages.
 
+![Screenshot of main functionality](Resources/halodi-unity-package-creator/halodi-unity-package-creator-screenshot.png | width=60%)
+
+
 Functionality 
 
 - Create packages inside the Packages/ folder, providing a basic file layout including asmdef files following the recommendation from Unity.
