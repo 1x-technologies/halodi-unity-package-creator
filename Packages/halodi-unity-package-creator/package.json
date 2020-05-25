@@ -16,7 +16,7 @@
   },
   "keywords": [],
   "dependencies": {
-    "com.halodi.halodi-unity-package-registry-manager": "0.0.2"
+    "com.halodi.halodi-unity-package-registry-manager": "0.0.3"
   },
   "publishConfig": {
     "registry": "https://api.bintray.com/npm/halodirobotics/unity"
