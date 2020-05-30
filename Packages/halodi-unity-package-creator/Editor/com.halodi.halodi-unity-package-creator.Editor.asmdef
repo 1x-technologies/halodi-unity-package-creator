@@ -11,7 +11,7 @@
     "allowUnsafeCode": true,
     "overrideReferences": true,
     "precompiledReferences": [
-        "com.halodi.halodi-unity-package-creator.Newtonsoft.Json.dll"
+        "78E813DA.Newtonsoft.Json.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],
