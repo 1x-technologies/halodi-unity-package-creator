@@ -1,21 +1,23 @@
 {
     "name": "com.halodi.halodi-unity-package-creator.Editor.Tests",
     "references": [
-        "com.halodi.halodi-unity-package-creator.Runtime",
         "com.halodi.halodi-unity-package-creator.Editor",
-        "com.halodi.halodi-unity-package-creator.Runtime.Tests"
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
     "versionDefines": [],
-    "optionalUnityReferences": [
-        "TestAssemblies"
-    ]
+    "noEngineReferences": false
 }
