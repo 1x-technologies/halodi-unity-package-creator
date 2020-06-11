@@ -56,27 +56,36 @@ namespace Halodi.PackageCreator
         {   
             manifest.OnBeforeSerialize();
 
-
-            string PackageFolderName = manifest.package_name;
-            string packageFolder = AssetDatabaseUtilities.CreateFolder(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder), PackageFolderName);
-
-
-            AssemblyDefinition runtime = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.RuntimeFolder, manifest.name, false, false, null);
-            AssemblyDefinition editor = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.EditorFolder, manifest.name, false, true, new List<string>{ runtime.name });
-
-            string testFolder = AssetDatabaseUtilities.CreateFolder(packageFolder, Paths.TestFolder);
+            try
+            {
+                AssetDatabase.StartAssetEditing();
+                string PackageFolderName = manifest.package_name;
+                string packageFolder = AssetDatabaseUtilities.CreateFolder(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder), PackageFolderName);
 
 
-            AssemblyDefinition runtimeTests = AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.RuntimeFolder, manifest.name, true, false, new List<string> { runtime.name });
-            AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.EditorFolder, manifest.name, true, true, new List<string> { runtime.name, editor.name });
+                AssemblyDefinition runtime = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.RuntimeFolder, manifest.name, false, false, null);
+                AssemblyDefinition editor = AssetDatabaseUtilities.CreateAssemblyFolder(packageFolder, Paths.EditorFolder, manifest.name, false, true, new List<string>{ runtime.name });
+
+                string testFolder = AssetDatabaseUtilities.CreateFolder(packageFolder, Paths.TestFolder);
 
 
-            AssetDatabaseUtilities.CreateJSONFile(manifest, packageFolder, Paths.PackageManifest);
-            AssetDatabaseUtilities.CreateTextFile(CreateReadme(manifest), packageFolder, Paths.Readme);
-            AssetDatabaseUtilities.CreateTextFile(CreateLicense(manifest), packageFolder, Paths.License);
-            AssetDatabaseUtilities.CreateTextFile(CreateChangelog(manifest), packageFolder, Paths.Changelog);
+                AssemblyDefinition runtimeTests = AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.RuntimeFolder, manifest.name, true, false, new List<string> { runtime.name });
+                AssetDatabaseUtilities.CreateAssemblyFolder(testFolder, Paths.EditorFolder, manifest.name, true, true, new List<string> { runtime.name, editor.name });
 
-            AssetDatabaseUtilities.UpdateAssetDatabase();
+
+                AssetDatabaseUtilities.CreateJSONFile(manifest, packageFolder, Paths.PackageManifest);
+                AssetDatabaseUtilities.CreateTextFile(CreateReadme(manifest), packageFolder, Paths.Readme);
+                AssetDatabaseUtilities.CreateTextFile(CreateLicense(manifest), packageFolder, Paths.License);
+                AssetDatabaseUtilities.CreateTextFile(CreateChangelog(manifest), packageFolder, Paths.Changelog);
+
+            }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
+                AssetDatabaseUtilities.UpdateAssetDatabase();
+            }
+
+            
         }
 
         internal static bool ValidateVersion(string version)

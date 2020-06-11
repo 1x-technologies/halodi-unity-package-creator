@@ -43,7 +43,7 @@ namespace Halodi.PackageCreator
 
         public PublishConfig publishConfig = new PublishConfig();
 
-        public List<Sample> samples;
+        public List<Sample> samples = null;
 
         public void OnBeforeSerialize()
         {

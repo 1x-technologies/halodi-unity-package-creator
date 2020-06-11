@@ -116,7 +116,18 @@ namespace Halodi.PackageCreator
                 def.optionalUnityReferences.Add("TestAssemblies");
             }
 
+
             AssetDatabaseUtilities.CreateJSONFile(def, folder, def.name + Paths.AssemblyDefinitionExtension);
+
+            string AssemblyDefinition = @"
+using System.Reflection;
+
+[assembly: AssemblyTitle(""" + def.name + @""")]
+[assembly: AssemblyProduct(""" + packageName + @""")]
+";
+
+            AssetDatabaseUtilities.CreateTextFile(AssemblyDefinition, folder, "AssemblyInfo.cs");        
+        
 
             return def;
         }
