@@ -1,6 +1,6 @@
 {
   "name": "com.halodi.halodi-unity-package-creator",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "displayName": "Halodi Unity Package Creator",
   "description": "Tools for creating, editing and publishing Unity packages",
   "unity": "2019.3",
@@ -16,7 +16,7 @@
   },
   "keywords": [],
   "dependencies": {
-    "com.halodi.halodi-unity-package-registry-manager": "0.0.6"
+    "com.halodi.halodi-unity-package-registry-manager": "0.1.0"
   },
   "publishConfig": {
     "registry": "https://api.bintray.com/npm/halodirobotics/unity"

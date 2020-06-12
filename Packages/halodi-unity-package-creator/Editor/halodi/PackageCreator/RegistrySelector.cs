@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using Halodi.PackageRegistry;
+using Halodi.PackageRegistry.Core;
 using UnityEditor;
 using UnityEngine;
 

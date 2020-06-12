@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using Halodi.PackageRegistry;
+using Halodi.PackageRegistry.Core;
+using Halodi.PackageRegistry.NPM;
 using UnityEditor;
-using UnityEditor.PackageManager;
-using UnityEditor.PackageManager.Requests;
-using UnityEngine;
 
 
 namespace Halodi.PackageCreator
@@ -56,7 +49,7 @@ namespace Halodi.PackageCreator
                 manifest.OnAfterDeserialize();
                 string PackageFolder = Path.Combine(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder), manifest.package_name);
 
-                NPM.Publish(PackageFolder, registry);
+                NPMPublish.Publish(PackageFolder, registry);
             }
             finally
             {

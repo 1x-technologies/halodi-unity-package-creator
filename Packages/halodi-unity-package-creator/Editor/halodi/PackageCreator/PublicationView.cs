@@ -38,7 +38,7 @@ namespace Halodi.PackageCreator
 
         void OnEnable()
         {
-            
+
         }
 
         void OnDisable()
@@ -148,41 +148,47 @@ namespace Halodi.PackageCreator
                 }
 
 
+
                 EditorUtility.DisplayProgressBar("Publishing package", "Publishing packages", 0f);
 
                 string result = "";
                 int currentPackage = 0;
                 bool failures = false;
-                foreach (var packageView in PackagesToPublish)
+                try
                 {
-                    if (packageView.publish)
+                    foreach (var packageView in PackagesToPublish)
                     {
-                        EditorUtility.DisplayProgressBar("Publishing package", "Publishing packages " + packageView.package.displayName + " to " + packageView.registry, (float)currentPackage / (float)packagesToPublish);
+                        if (packageView.publish)
+                        {
+                            EditorUtility.DisplayProgressBar("Publishing package", "Publishing packages " + packageView.package.displayName + " to " + packageView.registry, (float)currentPackage / (float)packagesToPublish);
 
-                        if (string.IsNullOrEmpty(packageView.registry))
-                        {
-                            failures = true;
-                            result += "[Error] No registry set for " + packageView.package.displayName + Environment.NewLine;
-                        }
-                        else
-                        {
-                            try
-                            {
-                                PublicationController.Publish(packageView.package, packageView.registry);
-                                result += "[Success] Publishing " + packageView.package.displayName + " succeeded." + Environment.NewLine;
-                            }
-                            catch (System.Exception e)
+                            if (string.IsNullOrEmpty(packageView.registry))
                             {
                                 failures = true;
-                                result += "[Error] Publishing " + packageView.package.displayName + " failed with error:" + Environment.NewLine + "\t" + e.Message + Environment.NewLine;
+                                result += "[Error] No registry set for " + packageView.package.displayName + Environment.NewLine;
                             }
-                        }
+                            else
+                            {
+                                try
+                                {
+                                    PublicationController.Publish(packageView.package, packageView.registry);
+                                    result += "[Success] Publishing " + packageView.package.displayName + " succeeded." + Environment.NewLine;
+                                }
+                                catch (System.Exception e)
+                                {
+                                    failures = true;
+                                    result += "[Error] Publishing " + packageView.package.displayName + " failed with error:" + Environment.NewLine + "\t" + e.Message + Environment.NewLine;
+                                }
+                            }
 
-                        currentPackage++;
+                            currentPackage++;
+                        }
                     }
                 }
-                EditorUtility.ClearProgressBar();
-
+                finally
+                {
+                    EditorUtility.ClearProgressBar();
+                }
                 string message;
                 if (failures)
                 {
