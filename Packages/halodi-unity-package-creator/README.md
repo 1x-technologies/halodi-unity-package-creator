@@ -43,7 +43,7 @@ Token: [Leave empty]
 Then go to Packages -> Add Packages (Bulk) and enter
 
 ```
-com.halodi.halodi-unity-package-registry-manager
+com.halodi.halodi-unity-package-creator
 ```
 
 Press Add packages to add "Halodi Unity Package Creator" to your project.
