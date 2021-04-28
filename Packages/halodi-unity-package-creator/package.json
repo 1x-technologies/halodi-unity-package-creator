@@ -16,7 +16,7 @@
   },
   "keywords": [],
   "dependencies": {
-    "com.halodi.halodi-unity-package-registry-manager": "0.1.5"
+    "com.halodi.halodi-unity-package-registry-manager": "0.1.3"
   },
   "publishConfig": {
     "registry": "https://artifacts.halodi.com/repository/upm-open-source-production/"

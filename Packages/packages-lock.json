@@ -11,7 +11,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.halodi.halodi-unity-package-registry-manager": "0.1.5"
+        "com.halodi.halodi-unity-package-registry-manager": "0.1.3"
       }
     },
     "com.halodi.halodi-unity-package-registry-manager": {
