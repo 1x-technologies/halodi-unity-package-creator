@@ -33,7 +33,7 @@ Go to "Packages -> Manage scoped registries" and add registry with the following
 
 ```
 Name: Halodi OSS
-Url: https://api.bintray.com/npm/halodirobotics/unity
+Url: https://artifacts.halodi.com/repository/upm-open-source-group/
 Scope: com.halodi
 Always auth: false
 Token: [Leave empty]
