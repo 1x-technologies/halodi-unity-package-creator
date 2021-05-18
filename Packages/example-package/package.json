@@ -1,11 +1,11 @@
 {
-    "name": "com.halodi.example-package",
-    "version": "0.0.1",
-    "displayName": "Example Package",
-    "description": "An example package",
-    "license": "Apache-2.0",
-    "publishConfig": {
-        "registry": ""
-    },
-    "samples": []
+  "name": "com.halodi.example-package",
+  "version": "0.1.0",
+  "displayName": "Example Package",
+  "description": "An example package",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "registry": ""
+  },
+  "samples": []
 }
