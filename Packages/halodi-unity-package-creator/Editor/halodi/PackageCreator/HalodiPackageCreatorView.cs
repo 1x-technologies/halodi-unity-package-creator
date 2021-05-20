@@ -19,6 +19,14 @@ namespace Halodi.PackageCreator
             HalodiPackageCreatorView.ShowWindow();
         }
 
+
+        [MenuItem("Packages/Publish packages in project", false, 0)] //creates a new menu tab
+        internal static void PublishPackageMenuItem()
+        {
+            var packages = HalodiPackageCreatorController.LoadPackages();
+            PublicationView.PublishPackages(packages);
+        }
+
         void OnEnable()
         {
             packages = HalodiPackageCreatorController.LoadPackages();
@@ -83,9 +91,8 @@ namespace Halodi.PackageCreator
                 EditorGUILayout.LabelField(package.displayName);
                 if(GUILayout.Button("Edit"))
                 {
-                    SelectPackage(package);
+                    EditPackage(package);
                 }
-
                 if(GUILayout.Button("Add sample"))
                 {
                     AddSample(package);
@@ -152,6 +159,14 @@ namespace Halodi.PackageCreator
             Selection.activeObject = instance;
             CloseWindow();
         }
+
+
+        private void EditPackage(PackageManifest package)
+        {
+            HalodiEditPackageView.EditPackage(package);
+            SelectPackage(package);
+        }
+
 
         private void AddSample(PackageManifest package)
         {

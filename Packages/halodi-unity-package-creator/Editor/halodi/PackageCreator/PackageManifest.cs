@@ -23,6 +23,21 @@ namespace Halodi.PackageCreator
             public string path = "";
         }
 
+        [System.Serializable]
+        public class Author
+        {
+            public string name = "";
+            public string email = "";
+            public string url = "";
+        }
+
+        [System.Serializable]
+        public class Repository
+        {
+            public string type = "";
+            public string url = "";
+        }
+
         [NonSerialized]
         public string filesystem_location;
 
@@ -44,6 +59,13 @@ namespace Halodi.PackageCreator
         public PublishConfig publishConfig = new PublishConfig();
 
         public List<Sample> samples = null;
+
+        public Author author = new Author();
+
+        public Repository repository = new Repository();
+
+
+        public bool hideInEditor = false;
 
         public void OnBeforeSerialize()
         {

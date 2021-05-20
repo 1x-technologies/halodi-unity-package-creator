@@ -41,6 +41,43 @@ namespace Halodi.PackageCreator
             return packages;
         }
 
+        /// <summary>
+        /// Get the package manifest for this object, or null if not in a package
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static PackageManifest GetPackageManifest(UnityEngine.Object obj)
+        {
+            string selectedPath = AssetDatabase.GetAssetPath(obj);
+            string fullpath = AssetDatabaseUtilities.GetRelativeToProjectRoot(selectedPath);
+            // Check if it is an internalized package
+            if(!File.Exists(fullpath) && !Directory.Exists(fullpath))
+            {
+                return null;
+            }
+
+            Debug.Log(fullpath);
+            
+            string[] path = AssetDatabase.GetAssetPath(obj).Split('/');
+
+            if(path[0] == Paths.PackagesFolder)
+            {
+                DirectoryInfo packageDirectory = new DirectoryInfo(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder));
+                string packageName = path[1];
+
+                string packageJSONPath = Path.Combine(packageDirectory.ToString(), packageName);
+                if(File.Exists(Path.Combine(packageJSONPath, Paths.PackageManifest)))
+                {
+                    string manifestJSON = AssetDatabaseUtilities.ReadTextFile(packageJSONPath, Paths.PackageManifest);
+                    PackageManifest manifest = JsonUtility.FromJson<PackageManifest>(manifestJSON);
+                    manifest.OnAfterDeserialize();
+                    manifest.filesystem_location = packageJSONPath;
+                    return manifest;
+                }
+            }
+            return null;
+
+        }
 
         internal static TextAsset GetPackageManifestObject(PackageManifest manifest)
         {
