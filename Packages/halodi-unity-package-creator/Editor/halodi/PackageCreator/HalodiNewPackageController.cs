@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using static Halodi.PackageCreator.AssetDatabaseUtilities;
 using System.Text;
+using Artees.UnitySemVer;
 
 namespace Halodi.PackageCreator
 {
@@ -90,12 +91,18 @@ namespace Halodi.PackageCreator
 
         internal static bool ValidateVersion(string version)
         {
-            if(Regex.IsMatch(version, @"^0+\.0+\.0+$"))
+            SemVer currentVersion = SemVer.Parse(version);
+            SemVerValidationResult valid = currentVersion.Validate();
+
+            if(valid.IsValid)
+            {
+                Debug.Log(valid.Corrected.ToString());
+                return valid.Corrected.ToString() == version;
+            }
+            else
             {
                 return false;
             }
-
-            return Regex.IsMatch(version, @"^[0-9]+\.[0-9]+\.[0-9]+$");
         }
 
         internal static bool ValidateName(string name)
