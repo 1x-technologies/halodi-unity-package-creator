@@ -25,6 +25,12 @@ namespace Halodi.PackageCreator
             manifest.author.email = EditorGUILayout.TextField("Author email: ", manifest.author.email);
             manifest.author.url = EditorGUILayout.TextField("Author website: ", manifest.author.url);
 
+            string selectedLicense = licenseList[licenseIndex];
+            if(selectedLicense != manifest.license)
+            {
+                licenseIndex = Array.FindIndex(licenseList, x => x == manifest.license);
+            }
+
             licenseIndex = EditorGUILayout.Popup("License: ", licenseIndex, licenseList);
 
             manifest.repository.url = EditorGUILayout.TextField("GIT repository: ", manifest.repository.url);
@@ -33,8 +39,8 @@ namespace Halodi.PackageCreator
             manifest.publishConfig.registry = registrySelector.SelectRegistry("\t", manifest.publishConfig.registry);
 
 
+            
             // Set fields in manifest
-            manifest.repository.type = "git";
             manifest.license = licenseList[licenseIndex];
         }
 
@@ -59,6 +65,15 @@ namespace Halodi.PackageCreator
 
             manifestJSON["publishConfig"] = publicationConfig;
 
+
+            if(string.IsNullOrWhiteSpace(manifest.repository.url))
+            {
+                manifest.repository.type = "";
+            }
+            else
+            {
+                manifest.repository.type = "git";
+            }
 
             JObject repo = new JObject(
                 new JProperty("type", manifest.repository.type),

@@ -23,6 +23,21 @@
         "com.unity.sharp-zip-lib": "1.2.2-preview.1"
       }
     },
+    "com.halodi.robot-physics": {
+      "version": "0.0.2",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://artifacts.halodi.com/repository/upm-open-source-group"
+    },
+    "com.halodi.urdf-model-importer": {
+      "version": "file:urdf-model-importer",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.halodi.robot-physics": "0.0.2"
+      }
+    },
     "com.unity.collab-proxy": {
       "version": "1.3.9",
       "depth": 0,

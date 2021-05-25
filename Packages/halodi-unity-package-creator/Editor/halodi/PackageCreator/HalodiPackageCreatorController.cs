@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json.Linq;
@@ -28,9 +29,9 @@ namespace Halodi.PackageCreator
                 {
                     try
                     {
-                        if(source.HasValue)
+                        if (source.HasValue)
                         {
-                            if(package.source != source.Value)
+                            if (package.source != source.Value)
                             {
                                 continue;
                             }
@@ -52,9 +53,75 @@ namespace Halodi.PackageCreator
             {
                 EditorApplication.delayCall += () => LoadPackagesUpdate(request, callback, source);
             }
+        }
 
 
 
+        internal static void EmbedPackageFromGit(PackageManifest manifest)
+        {
+            string targetDirectory = Path.Combine(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder), manifest.package_name);
+
+            if(File.Exists(targetDirectory))
+            {
+                Debug.LogWarning("Package directory " + targetDirectory + " already exists");
+                return;
+            }
+
+            string gitCommand = "clone \"" + manifest.repository.url + "\"" + " " + "\"" + targetDirectory + "\"";
+            try
+            {
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.FileName = "git";
+                process.StartInfo.Arguments = gitCommand;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+
+                process.OutputDataReceived += StdOut;
+                process.ErrorDataReceived += StdErr;
+
+
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                
+                EmbedPackageProgress(process, manifest);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Cannot find git executable: " + e.Message);
+            }
+        }
+
+        private static void EmbedPackageProgress(System.Diagnostics.Process process, PackageManifest manifest)
+        {
+            if(process.HasExited)
+            {
+                EditorUtility.ClearProgressBar();
+                Debug.Log("Git clone finished with exit code " + process.ExitCode);
+                process.Dispose();
+            }
+            else
+            {
+                EditorUtility.DisplayProgressBar("Cloning " + manifest.name, "Cloning " + manifest.name, 0.5f);
+                EditorApplication.delayCall += () => EmbedPackageProgress(process, manifest);
+            }
+        }
+
+        private static void StdErr(object sender, System.Diagnostics.DataReceivedEventArgs e)
+        {
+            if(!string.IsNullOrEmpty(e.Data))
+            {
+                Debug.LogWarning(sender + " " + e.Data);
+            }
+        }
+
+        private static void StdOut(object sender, System.Diagnostics.DataReceivedEventArgs e)
+        {
+            if(!string.IsNullOrEmpty(e.Data))
+            {
+                Debug.Log(sender + " " + e.Data);
+            }
         }
 
 
@@ -83,14 +150,14 @@ namespace Halodi.PackageCreator
 
             try
             {
-                return new PackageManifest(info); 
+                return new PackageManifest(info);
             }
             catch
             {
                 Debug.LogWarning("Cannot load manifest for " + info.name);
                 return null;
             }
-            
+
 
         }
 

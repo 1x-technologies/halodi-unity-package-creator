@@ -68,6 +68,8 @@ namespace Halodi.PackageCreator
         [NonSerialized]
         public TextAsset asset;
 
+        public bool IsEmbedded => info.source == UnityEditor.PackageManager.PackageSource.Embedded;
+
         [NonSerialized]
         public string filesystem_location;
 

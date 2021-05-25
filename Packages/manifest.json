@@ -10,6 +10,7 @@
   ],
   "dependencies": {
     "com.halodi.halodi-unity-package-registry-manager": "https://github.com/Halodi/halodi-unity-package-registry-manager.git",
+    "com.halodi.urdf-model-importer": "0.0.5",
     "com.unity.collab-proxy": "1.3.9",
     "com.unity.ext.nunit": "1.0.0",
     "com.unity.ide.rider": "1.2.1",

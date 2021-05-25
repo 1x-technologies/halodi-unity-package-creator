@@ -11,6 +11,8 @@ namespace Halodi.PackageCreator
     [System.Serializable]
     public class SPDXLicenseList
     {
+        
+        
         public SPDXLicense[] licenses;
 
 
@@ -32,6 +34,8 @@ namespace Halodi.PackageCreator
                 return JsonUtility.FromJson<SPDXLicenseList>(spdxJson.text);
             }
         }
+
+
 
         public string[] ToStringArray()
         {
