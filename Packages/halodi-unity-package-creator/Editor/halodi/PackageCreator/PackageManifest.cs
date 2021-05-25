@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 namespace Halodi.PackageCreator
@@ -9,6 +11,28 @@ namespace Halodi.PackageCreator
     [System.Serializable]
     internal class PackageManifest
     {
+
+        public PackageManifest()
+        {
+            
+        }
+
+        public PackageManifest(UnityEditor.PackageManager.PackageInfo info)
+        {
+            this.info = info;
+            var location = Path.Combine(info.assetPath, Paths.PackageManifest);
+            asset = AssetDatabase.LoadAssetAtPath<TextAsset>(location);
+
+            if(asset == null)
+            {
+                throw new System.Exception("Cannot load asset at path " + location);
+            }
+
+            JsonUtility.FromJsonOverwrite(asset.text, this);
+            OnAfterDeserialize();
+            filesystem_location = info.resolvedPath;
+        }
+
         [System.Serializable]
         public class PublishConfig
         {
@@ -37,6 +61,12 @@ namespace Halodi.PackageCreator
             public string type = "";
             public string url = "";
         }
+
+        [NonSerialized]
+        public UnityEditor.PackageManager.PackageInfo info;
+
+        [NonSerialized]
+        public TextAsset asset;
 
         [NonSerialized]
         public string filesystem_location;

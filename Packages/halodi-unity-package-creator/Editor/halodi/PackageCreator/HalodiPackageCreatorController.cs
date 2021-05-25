@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Json;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 namespace Halodi.PackageCreator
@@ -11,85 +10,98 @@ namespace Halodi.PackageCreator
     internal class HalodiPackageCreatorController
     {
 
-        internal static List<PackageManifest> LoadPackages()
+        public delegate void PackagesLoaded(List<PackageManifest> manifest);
+
+        internal static void LoadPackages(PackagesLoaded callback, UnityEditor.PackageManager.PackageSource? source = null)
         {
+            ListRequest request = UnityEditor.PackageManager.Client.List(true, false);
+            LoadPackagesUpdate(request, callback, source);
 
-            DirectoryInfo packageDirectory = new DirectoryInfo(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder));
+        }
 
-            List<PackageManifest> packages = new List<PackageManifest>();
-            foreach (DirectoryInfo directory in packageDirectory.EnumerateDirectories())
+        private static void LoadPackagesUpdate(ListRequest request, PackagesLoaded callback, UnityEditor.PackageManager.PackageSource? source)
+        {
+            if (request.IsCompleted)
             {
-                string manifestPath = Path.Combine(packageDirectory.ToString(), directory.Name);
-                if(File.Exists(Path.Combine(manifestPath, Paths.PackageManifest)))
+                List<PackageManifest> packages = new List<PackageManifest>();
+                foreach (var package in request.Result)
                 {
-                    string halodiPackage = AssetDatabaseUtilities.ReadTextFile(manifestPath, Paths.PackageManifest);
+                    try
+                    {
+                        if(source.HasValue)
+                        {
+                            if(package.source != source.Value)
+                            {
+                                continue;
+                            }
+                        }
 
-                    if(halodiPackage == null)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        PackageManifest manifest = JsonUtility.FromJson<PackageManifest>(halodiPackage);
-                        manifest.OnAfterDeserialize();
-                        manifest.filesystem_location = manifestPath;
+                        PackageManifest manifest = new PackageManifest(package);
                         packages.Add(manifest);
                     }
+                    catch
+                    {
+                        Debug.LogWarning("Cannot load manifest for package " + package.name);
+
+                    }
                 }
+
+                callback(packages);
+            }
+            else
+            {
+                EditorApplication.delayCall += () => LoadPackagesUpdate(request, callback, source);
             }
 
-            return packages;
+
+
         }
+
 
         /// <summary>
         /// Get the package manifest for this object, or null if not in a package
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        internal static PackageManifest GetPackageManifest(UnityEngine.Object obj)
+        internal static PackageManifest GetPackageManifest(UnityEngine.Object obj, bool onlyEmbedded)
         {
             string selectedPath = AssetDatabase.GetAssetPath(obj);
-            string fullpath = AssetDatabaseUtilities.GetRelativeToProjectRoot(selectedPath);
-            // Check if it is an internalized package
-            if(!File.Exists(fullpath) && !Directory.Exists(fullpath))
+            var info = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(selectedPath);
+
+            if (info == null)
             {
                 return null;
             }
 
-            Debug.Log(fullpath);
-            
-            string[] path = AssetDatabase.GetAssetPath(obj).Split('/');
-
-            if(path[0] == Paths.PackagesFolder)
+            if (onlyEmbedded)
             {
-                DirectoryInfo packageDirectory = new DirectoryInfo(AssetDatabaseUtilities.GetRelativeToProjectRoot(Paths.PackagesFolder));
-                string packageName = path[1];
-
-                string packageJSONPath = Path.Combine(packageDirectory.ToString(), packageName);
-                if(File.Exists(Path.Combine(packageJSONPath, Paths.PackageManifest)))
+                if (info.source != UnityEditor.PackageManager.PackageSource.Embedded)
                 {
-                    string manifestJSON = AssetDatabaseUtilities.ReadTextFile(packageJSONPath, Paths.PackageManifest);
-                    PackageManifest manifest = JsonUtility.FromJson<PackageManifest>(manifestJSON);
-                    manifest.OnAfterDeserialize();
-                    manifest.filesystem_location = packageJSONPath;
-                    return manifest;
+                    return null;
                 }
             }
-            return null;
+
+            try
+            {
+                return new PackageManifest(info); 
+            }
+            catch
+            {
+                Debug.LogWarning("Cannot load manifest for " + info.name);
+                return null;
+            }
+            
 
         }
 
         internal static TextAsset GetPackageManifestObject(PackageManifest manifest)
         {
-         
-            string packageDirectory = Path.Combine(Paths.PackagesFolder, manifest.name);
-            string packageManifest = Path.Combine(packageDirectory, Paths.PackageManifest);
-            return (TextAsset) AssetDatabase.LoadAssetAtPath(packageManifest, typeof(TextAsset));
+            return manifest.asset;
         }
 
         internal static string GetPackageDirectory(PackageManifest manifest)
         {
-            return manifest.filesystem_location; 
+            return manifest.filesystem_location;
         }
 
         private static string GetAssetDirectory(PackageManifest manifest)
@@ -104,7 +116,7 @@ namespace Halodi.PackageCreator
         {
             return Path.Combine(GetAssetDirectory(manifest), Paths.AssetsSamplesFolder);
         }
-        
+
 
 
         internal static void AddSample(PackageManifest manifest, PackageManifest.Sample sample)
@@ -113,7 +125,7 @@ namespace Halodi.PackageCreator
             string assetDirectory = GetAssetDirectory(manifest);
             string samplesDirectory = GetAssetsSampleDirectory(manifest);
 
-            if(!sample.path.StartsWith(Paths.PackageSamplesFolder + "/"))
+            if (!sample.path.StartsWith(Paths.PackageSamplesFolder + "/"))
             {
                 throw new System.Exception("Invalid sample directory");
             }
@@ -126,19 +138,19 @@ namespace Halodi.PackageCreator
 
             Directory.CreateDirectory(sampleFolder);
             CreateGitKeep.Create(sampleFolder);
-                
 
-                
+
+
             JObject manifestJSON = JObject.Parse(GetPackageManifestObject(manifest).text);
-            
-            var samplesJSON = (JArray) manifestJSON["samples"];
-            
-            
+
+            var samplesJSON = (JArray)manifestJSON["samples"];
+
+
             JObject next = new JObject(
                     new JProperty("displayName", sample.displayName),
                     new JProperty("description", sample.description),
                     new JProperty("path", sample.path));
-            
+
             samplesJSON.Add(next);
 
 

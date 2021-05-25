@@ -6,8 +6,6 @@ namespace Halodi.PackageCreator
 {
     internal class ExtendedPackagePropertiesUI
     {
-
-        internal PackageManifest manifest;
         string[] licenseList = null;
 
         int licenseIndex = 0;

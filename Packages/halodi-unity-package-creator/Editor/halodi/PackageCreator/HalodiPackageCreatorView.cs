@@ -7,7 +7,7 @@ namespace Halodi.PackageCreator
 {
     internal class HalodiPackageCreatorView : EditorWindow
     {
-        List<PackageManifest> packages = null;
+        List<PackageManifest> packages = new List<PackageManifest>();
         Vector2 scrollPos;
  
         private bool useGroupVersion;
@@ -23,13 +23,12 @@ namespace Halodi.PackageCreator
         [MenuItem("Packages/Publish packages in project", false, 0)] //creates a new menu tab
         internal static void PublishPackageMenuItem()
         {
-            var packages = HalodiPackageCreatorController.LoadPackages();
-            PublicationView.PublishPackages(packages);
+            PublicationView.PublishPackages();
         }
 
         void OnEnable()
         {
-            packages = HalodiPackageCreatorController.LoadPackages();
+            HalodiPackageCreatorController.LoadPackages((p) => packages = p, UnityEditor.PackageManager.PackageSource.Embedded);
             minSize = new Vector2(640, 320);
 
             useGroupVersion = PackageGroupConfiguration.IsUseGroupVersion();
@@ -149,7 +148,7 @@ namespace Halodi.PackageCreator
 
         private void PublishPackages()
         {
-            PublicationView.PublishPackages(packages);
+            PublicationView.PublishPackages();
             CloseWindow();
         }
 

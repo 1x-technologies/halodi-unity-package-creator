@@ -38,7 +38,7 @@ namespace Halodi.PackageCreator
 
         void OnEnable()
         {
-
+            HalodiPackageCreatorController.LoadPackages(SetPackages, UnityEditor.PackageManager.PackageSource.Embedded);
         }
 
         void OnDisable()
@@ -209,10 +209,9 @@ namespace Halodi.PackageCreator
 
 
 
-        public static void PublishPackages(List<PackageManifest> packages)
+        public static void PublishPackages()
         {
-            PublicationView publicationView = EditorWindow.GetWindow<PublicationView>(true, "Package Publishing", true);
-            publicationView.SetPackages(packages);
+            EditorWindow.GetWindow<PublicationView>(true, "Package Publishing", true);
         }
 
     }

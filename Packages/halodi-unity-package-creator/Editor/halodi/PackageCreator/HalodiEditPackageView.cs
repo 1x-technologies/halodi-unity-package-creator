@@ -11,8 +11,7 @@ namespace Halodi.PackageCreator
         [MenuItem("Assets/Edit Package")]
         private static void EditPackageMenu()
         {
-            Debug.Log(Selection.activeObject);
-            PackageManifest manifest = HalodiPackageCreatorController.GetPackageManifest(Selection.activeObject);
+            PackageManifest manifest = HalodiPackageCreatorController.GetPackageManifest(Selection.activeObject, true);
             if (manifest != null)
             {
                 EditPackage(manifest);
@@ -23,9 +22,10 @@ namespace Halodi.PackageCreator
         [MenuItem("Assets/Edit Package", true)]
         private static bool EditPackageMenuValidation()
         {
-            PackageManifest manifest = HalodiPackageCreatorController.GetPackageManifest(Selection.activeObject);
+            PackageManifest manifest = HalodiPackageCreatorController.GetPackageManifest(Selection.activeObject, true);
             return manifest != null;
         }
+        
 
 
         private ExtendedPackagePropertiesUI extendedUI;
@@ -51,6 +51,10 @@ namespace Halodi.PackageCreator
 
                 extendedUI.Draw(manifest);
 
+                if (GUILayout.Button("Show in Inspector"))
+                {
+                    OnClickInspector();
+                }
 
                 if (GUILayout.Button("Apply"))
                 {
@@ -59,19 +63,29 @@ namespace Halodi.PackageCreator
 
                 if (GUILayout.Button("Cancel"))
                 {
-                    Close();
-                    GUIUtility.ExitGUI();
+                    Exit();
                 }
 
             }
 
         }
 
+        private void OnClickInspector()
+        {
+            Selection.activeObject = manifest.asset;
+            Exit();
+        }
+
+        private void Exit()
+        {
+            Close();
+            GUIUtility.ExitGUI();
+        }
+
         private void OnClickUpdate()
         {
             extendedUI.Store(manifest);
-
-
+            OnClickInspector();
         }
 
         internal static void EditPackage(PackageManifest package)
