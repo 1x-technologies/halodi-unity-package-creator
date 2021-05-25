@@ -13,6 +13,7 @@ namespace Halodi.PackageCreator
         internal RegistrySelector RegistrySelector;
         internal string registry;
 
+
         public PublicationPackageView(PackageManifest package)
         {
             this.publish = false;
@@ -35,6 +36,43 @@ namespace Halodi.PackageCreator
         private bool publishAll;
 
         private Vector2 scrollPos;
+
+        private UnityEditor.PackageManager.PackageInfo initialSelection = null;
+
+
+
+        [MenuItem("Packages/Publish packages in project", false, 1)]
+        internal static void PublishPackageMenuItem()
+        {
+            PublicationView.PublishPackages();
+        }
+
+        [MenuItem("Assets/Publish Package")]
+        private static void PublishPackageMenu()
+        {
+            PackageManifest manifest = HalodiPackageCreatorController.GetPackageManifest(Selection.activeObject, true);
+            if (manifest != null)
+            {
+                PublicationView.PublishPackages(manifest.info);
+            }
+
+        }
+
+        [MenuItem("Assets/Publish Package", true)]
+        private static bool PublishPackageMenuValidation()
+        {
+            PackageManifest manifest = HalodiPackageCreatorController.GetPackageManifest(Selection.activeObject, true);
+            if(manifest != null)
+            {
+                return manifest.info.source == UnityEditor.PackageManager.PackageSource.Embedded;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
 
         void OnEnable()
         {
@@ -60,6 +98,13 @@ namespace Halodi.PackageCreator
         private void PackageGUI(PublicationPackageView packageView)
         {
             EditorGUI.BeginChangeCheck();
+
+            if(initialSelection != null && initialSelection.packageId == packageView.package.info.packageId)
+            {
+                packageView.publish = true;
+                initialSelection = null;
+            }
+
             packageView.publish = EditorGUILayout.BeginToggleGroup(packageView.package.displayName, packageView.publish);
             if (EditorGUI.EndChangeCheck())
             {
@@ -209,9 +254,10 @@ namespace Halodi.PackageCreator
 
 
 
-        public static void PublishPackages()
+        public static void PublishPackages(UnityEditor.PackageManager.PackageInfo info = null)
         {
-            EditorWindow.GetWindow<PublicationView>(true, "Package Publishing", true);
+            PublicationView view = EditorWindow.GetWindow<PublicationView>(true, "Package Publishing", true);
+            view.initialSelection = info;
         }
 
     }

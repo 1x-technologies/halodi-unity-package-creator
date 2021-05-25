@@ -11,7 +11,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.halodi.halodi-unity-package-registry-manager": "0.1.8"
+        "com.halodi.halodi-unity-package-registry-manager": "1.0.0"
       }
     },
     "com.halodi.halodi-unity-package-registry-manager": {
@@ -21,21 +21,6 @@
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "2.0.0",
         "com.unity.sharp-zip-lib": "1.2.2-preview.1"
-      }
-    },
-    "com.halodi.robot-physics": {
-      "version": "0.0.2",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://artifacts.halodi.com/repository/upm-open-source-group"
-    },
-    "com.halodi.urdf-model-importer": {
-      "version": "file:urdf-model-importer",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.halodi.robot-physics": "0.0.2"
       }
     },
     "com.unity.collab-proxy": {

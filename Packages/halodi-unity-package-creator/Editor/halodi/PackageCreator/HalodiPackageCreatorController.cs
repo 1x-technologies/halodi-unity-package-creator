@@ -85,7 +85,7 @@ namespace Halodi.PackageCreator
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
                 
-                EmbedPackageProgress(process, manifest);
+                EditorApplication.delayCall += () => EmbedPackageProgress(process, manifest);
             }
             catch (Exception e)
             {
@@ -132,7 +132,16 @@ namespace Halodi.PackageCreator
         /// <returns></returns>
         internal static PackageManifest GetPackageManifest(UnityEngine.Object obj, bool onlyEmbedded)
         {
+            if(obj == null)
+            {
+                return null;
+            }
+            
             string selectedPath = AssetDatabase.GetAssetPath(obj);
+            if(String.IsNullOrEmpty(selectedPath))
+            {
+                return null;
+            }
             var info = UnityEditor.PackageManager.PackageInfo.FindForAssetPath(selectedPath);
 
             if (info == null)

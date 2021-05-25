@@ -83,6 +83,7 @@ namespace Halodi.PackageCreator
                 if (GUILayout.Button("Embed"))
                 {
                     HalodiPackageCreatorController.EmbedPackageFromGit(manifest);
+                    Exit();
                 }
 
                 if (GUILayout.Button("Cancel"))

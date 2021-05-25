@@ -13,17 +13,10 @@ namespace Halodi.PackageCreator
         private bool useGroupVersion;
         private string groupVersion;
 
-        [MenuItem("Packages/Manage packages in project", false, 0)] //creates a new menu tab
+        [MenuItem("Packages/Manage packages in project", false, 0)] 
         internal static void EditPackageConfiguration()
         {
             HalodiPackageCreatorView.ShowWindow();
-        }
-
-
-        [MenuItem("Packages/Publish packages in project", false, 0)] //creates a new menu tab
-        internal static void PublishPackageMenuItem()
-        {
-            PublicationView.PublishPackages();
         }
 
         void OnEnable()
