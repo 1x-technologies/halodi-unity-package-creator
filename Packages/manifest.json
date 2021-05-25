@@ -53,6 +53,6 @@
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0",
     "com.halodi.example-package": "0.1.0",
-    "com.halodi.halodi-unity-package-creator": "1.0.0-semversupport8"
+    "com.halodi.halodi-unity-package-creator": "1.0.0-importpackage1"
   }
 }
