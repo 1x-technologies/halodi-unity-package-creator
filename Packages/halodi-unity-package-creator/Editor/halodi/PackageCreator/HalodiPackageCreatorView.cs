@@ -7,13 +7,13 @@ namespace Halodi.PackageCreator
 {
     internal class HalodiPackageCreatorView : EditorWindow
     {
-        List<PackageManifest> packages = null;
+        List<PackageManifest> packages = new List<PackageManifest>();
         Vector2 scrollPos;
  
         private bool useGroupVersion;
         private string groupVersion;
 
-        [MenuItem("Packages/Manage packages in project", false, 0)] //creates a new menu tab
+        [MenuItem("Packages/Manage packages in project", false, 0)] 
         internal static void EditPackageConfiguration()
         {
             HalodiPackageCreatorView.ShowWindow();
@@ -21,7 +21,7 @@ namespace Halodi.PackageCreator
 
         void OnEnable()
         {
-            packages = HalodiPackageCreatorController.LoadPackages();
+            HalodiPackageCreatorController.LoadPackages((p) => packages = p, UnityEditor.PackageManager.PackageSource.Embedded);
             minSize = new Vector2(640, 320);
 
             useGroupVersion = PackageGroupConfiguration.IsUseGroupVersion();
@@ -83,9 +83,8 @@ namespace Halodi.PackageCreator
                 EditorGUILayout.LabelField(package.displayName);
                 if(GUILayout.Button("Edit"))
                 {
-                    SelectPackage(package);
+                    EditPackage(package);
                 }
-
                 if(GUILayout.Button("Add sample"))
                 {
                     AddSample(package);
@@ -142,7 +141,7 @@ namespace Halodi.PackageCreator
 
         private void PublishPackages()
         {
-            PublicationView.PublishPackages(packages);
+            PublicationView.PublishPackages();
             CloseWindow();
         }
 
@@ -152,6 +151,14 @@ namespace Halodi.PackageCreator
             Selection.activeObject = instance;
             CloseWindow();
         }
+
+
+        private void EditPackage(PackageManifest package)
+        {
+            HalodiEditPackageView.EditPackage(package);
+            SelectPackage(package);
+        }
+
 
         private void AddSample(PackageManifest package)
         {

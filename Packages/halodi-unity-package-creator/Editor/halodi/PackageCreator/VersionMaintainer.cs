@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Artees.UnitySemVer;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEditor.PackageManager;
@@ -69,32 +70,89 @@ namespace Halodi.PackageCreator
 
         private static void UpdateGroupVersion(PackageCollection collection, bool blocking)
         {
+            AssetDatabase.StartAssetEditing();
 
-            if (PackageGroupConfiguration.IsUseGroupVersion())
+            try
             {
-                string newVersion = PackageGroupConfiguration.GetGroupVersion();
-                foreach (var package in collection)
+                if (PackageGroupConfiguration.IsUseGroupVersion())
                 {
-                    if (package.source == PackageSource.Embedded)
+                    string newVersion = PackageGroupConfiguration.GetGroupVersion();
+                    foreach (var package in collection)
                     {
-                        UpdatePackageVersion(package, newVersion);
+                        if (package.source == PackageSource.Embedded)
+                        {
+                            UpdatePackageVersion(package, newVersion);
+                        }
                     }
                 }
             }
-            
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
+            }
+
             ListRequest(null, UpdateDependencies, blocking);
         }
 
 
         private static void UpdateDependencies(PackageCollection collection, bool blocking)
         {
-            foreach (var package in collection)
+            AssetDatabase.StartAssetEditing();
+            try
             {
-                if (package.source == PackageSource.Embedded)
+                foreach (var package in collection)
                 {
-                    UpdateDependencyVersions(package, collection);
+                    if (package.source == PackageSource.Embedded)
+                    {
+                        UpdateDependencyVersions(package, collection);
+                        UpdateManifest(package);
+                    }
                 }
             }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
+            }
+        }
+
+        private static void UpdateManifest(UnityEditor.PackageManager.PackageInfo package)
+        {
+            JObject manifestJSON = JObject.Parse(AssetDatabaseUtilities.ReadTextFile(Paths.PackagesFolder, Paths.ProjectManifest));
+
+            var dependencies = (JObject)manifestJSON["dependencies"];
+
+            bool changed = false;
+            string changes = "";
+            if(dependencies.ContainsKey(package.name))
+            {
+                string version = dependencies[package.name].ToObject<string>();
+
+                if(SemVer.Parse(version).ToString() == version)
+                {
+                    if(package.version != version)
+                    {
+                        changes += "\t" + package.name + "@" + version + "=>" + package.version;
+
+                        dependencies[package.name] = package.version;
+                        changed = true;
+                    }
+                }
+            }
+            else
+            {
+                changes += "+\t" + package.name + "@" + package.version;
+
+                JProperty property = new JProperty(package.name, package.version);
+                dependencies.Add(property);
+
+                changed = true;
+            }
+            if(changed)
+            {
+                AssetDatabaseUtilities.CreateTextFile(manifestJSON.ToString(), Paths.PackagesFolder, Paths.ProjectManifest);
+                Debug.Log("Updated project dependencies" + Environment.NewLine + changes);
+            }
+
         }
 
         private static UnityEditor.PackageManager.PackageInfo GetPackage(string name, PackageCollection collection)
@@ -122,7 +180,6 @@ namespace Halodi.PackageCreator
 
                     File.WriteAllText(manifest, jManifest.ToString());
 
-                    AssetDatabase.Refresh();
                     Debug.Log("Updated group version for " + package.displayName);
                 }
             }
@@ -163,7 +220,6 @@ namespace Halodi.PackageCreator
                 {
                     Debug.Log("Updated dependency versions for " + package.displayName + Environment.NewLine + changes);
                     File.WriteAllText(manifest, jManifest.ToString());
-                    AssetDatabase.Refresh();
                 }
             }
 

@@ -5,7 +5,12 @@
   "description": "An example package",
   "license": "Apache-2.0",
   "publishConfig": {
-    "registry": ""
+    "registry": "https://npm.halodi.com"
   },
-  "samples": []
+  "samples": [],
+  "author": {
+    "name": "Halodi",
+    "email": "jesper@halodi.com",
+    "url": "www.halodi.com"
+  }
 }

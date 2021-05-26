@@ -96,7 +96,6 @@ namespace Halodi.PackageCreator
 
             if(valid.IsValid)
             {
-                Debug.Log(valid.Corrected.ToString());
                 return valid.Corrected.ToString() == version;
             }
             else

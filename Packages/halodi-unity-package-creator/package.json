@@ -1,6 +1,6 @@
 {
   "name": "com.halodi.halodi-unity-package-creator",
-  "version": "1.0.0-semversupport1",
+  "version": "1.0.0",
   "displayName": "Halodi Unity Package Creator",
   "description": "Tools for creating, editing and publishing Unity packages",
   "unity": "2019.3",
@@ -16,10 +16,11 @@
   },
   "keywords": [],
   "dependencies": {
-    "com.halodi.halodi-unity-package-registry-manager": "0.1.5"
+    "com.halodi.halodi-unity-package-registry-manager": "1.0.0"
   },
   "publishConfig": {
     "registry": "https://artifacts.halodi.com/repository/upm-open-source-production/"
   },
-  "type": "tool"
+  "type": "tool",
+  "hideInEditor": false
 }

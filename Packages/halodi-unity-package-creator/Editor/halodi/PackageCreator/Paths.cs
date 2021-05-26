@@ -5,6 +5,8 @@ namespace Halodi.PackageCreator
     {
         public static string PackageManifest = "package.json";
 
+        public static string ProjectManifest = "manifest.json";
+
         public static string Readme = "README.md";
 
         public static string Changelog = "CHANGELOG.md";

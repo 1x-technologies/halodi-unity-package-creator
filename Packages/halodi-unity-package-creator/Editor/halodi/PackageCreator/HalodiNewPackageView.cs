@@ -6,18 +6,14 @@ namespace Halodi.PackageCreator
 {
     internal class HalodiNewPackageView : EditorWindow
     {
+        private ExtendedPackagePropertiesUI extendedUI;
         PackageManifest manifest = null;
-        RegistrySelector registrySelector = null;
-
-        string[] licenseList = null;
-
-        int licenseIndex = 0;
 
         void OnEnable()
         {
+            
+            extendedUI = new ExtendedPackagePropertiesUI();
             manifest = new PackageManifest();
-            registrySelector = new RegistrySelector();
-            licenseList = SPDXLicenseList.Load().ToStringArray();
         }
 
         void OnDisable()
@@ -34,14 +30,10 @@ namespace Halodi.PackageCreator
                 manifest.version = EditorGUILayout.TextField("Version: ", manifest.version);
                 manifest.displayName = EditorGUILayout.TextField("Display name: ", manifest.displayName);
 
-                licenseIndex = EditorGUILayout.Popup("License: ", licenseIndex, licenseList);
-
                 EditorGUILayout.LabelField("Description");
                 manifest.description = EditorGUILayout.TextArea(manifest.description, GUILayout.Height(EditorGUIUtility.singleLineHeight * 5));
 
-
-                EditorGUILayout.LabelField("Publication configuration");
-                manifest.publishConfig.registry =  registrySelector.SelectRegistry("\t", manifest.publishConfig.registry);
+                extendedUI.Draw(manifest);
 
                 if (GUILayout.Button("Create"))
                 {
@@ -60,7 +52,6 @@ namespace Halodi.PackageCreator
         {
             manifest.name_space = manifest.name_space.Trim();
             manifest.package_name = manifest.package_name.Trim();
-            manifest.license = licenseList[licenseIndex];
 
             if (!HalodiNewPackageController.ValidateName(manifest.package_name))
             {
