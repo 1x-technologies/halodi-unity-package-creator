@@ -10,7 +10,7 @@
   ],
   "dependencies": {
     "com.halodi.example-package": "0.1.0",
-    "com.halodi.halodi-unity-package-creator": "1.0.0-timportpackage2",
+    "com.halodi.halodi-unity-package-creator": "1.0.0",
     "com.halodi.halodi-unity-package-registry-manager": "https://github.com/Halodi/halodi-unity-package-registry-manager.git",
     "com.unity.collab-proxy": "1.3.9",
     "com.unity.ext.nunit": "1.0.6",
